@@ -45,10 +45,10 @@ exports.signup = (req, res, next) => {
         }
     })
         .then(function () {
-                models.User.findOne({
-                    attributes: ['username'],
-                    where : { username : username}
-                })
+            models.User.findOne({
+                attributes: ['username'],
+                where: { username: username }
+            })
                 .then(function (userFound) {
                     if (!userFound) {
 
@@ -66,16 +66,16 @@ exports.signup = (req, res, next) => {
                                 .catch(function (err) {
                                     return res.status(500).json({ 'error': `impossible d'ajouter l'utilisateur` });
                                 });
-        
+
                         });
-        
+
                     } else {
                         return res.status(400).json({ 'error': `utilisateur existant` });
                     }
                 })
 
-                })
-           
+        })
+
         .catch(function (err) {
             return res.status(500).json({ 'error': `impossible de vérifier l'utilisateur` });
         });
@@ -123,7 +123,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.getUserProfile = (req, res, next) => {
-    const userId = jwtUtils.getUserId(req.headers.authorization)
+    const userId = jwtUtils.getUserId(req.headers.authorization);
     models.User.findOne({
         attributes: ['id', 'email', 'username', 'bio'],
         where: { id: userId }
@@ -135,5 +135,37 @@ exports.getUserProfile = (req, res, next) => {
 
 }
 
+exports.updateUserProfile = (req, res, next) => {
+    const userId = jwtUtils.getUserId(req.headers.authorization);
+
+    //Params
+    const bio = req.body.bio;
+    models.User.findOne({
+        attributes: ['id', 'bio'],
+        where: { id: userId }
+    }).then(function (userFound) {
+        if (userFound) {
+            userFound.update({
+                bio: (bio ? bio : userFound.bio)
+            }).then(function () {
+                if (userFound) {
+                    return res.status(201).json(userFound);
+                } else {
+                    return res.status(500).json({ 'error': 'impossible de metre a jour la bio' });
+                }
+
+            }).catch(function (err) {
+                res.status(500).json({ 'error': `impossible de mettre à jour la bio` + err });
+            })
+        } else {
+            res.status(404).json({ 'error': 'utilisateur introuvable' });
+        }
+
+    })
+        .catch(function (err) {
+            return res.status(500).json({ 'error': `impossible d'accéder à l'utilisateur` + err });
+        });
+
+}
 
 
