@@ -6,7 +6,8 @@ const jwtUtils = require('../utils/jwt.utils');
 //Constants
 
 
-//Routes
+
+//Fonctions
 //fonction Like
 exports.like = (req, res, next) => {
     //recupération de l'id

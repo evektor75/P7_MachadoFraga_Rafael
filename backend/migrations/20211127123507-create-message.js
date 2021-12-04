@@ -28,6 +28,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      comment:{
+        allowNull:true,
+        type: Sequelize.STRING
+      },
       likes: {
         allowNull: false,
         type: Sequelize.INTEGER
