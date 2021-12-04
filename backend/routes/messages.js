@@ -7,6 +7,7 @@ const messagesCtrl = require('../controllers/messagesCtrl');
 
 router.post('/messages/new', messagesCtrl.createMessage);
 router.get('/messages', messagesCtrl.listMessages);
+router.delete('/messages/:messageId/delete', messagesCtrl.delete);
 
 //Export
 module.exports = router;

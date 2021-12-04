@@ -14,7 +14,6 @@ module.exports = {
         references:{
           model: 'Users',
           key:'id'
-
         }
       },
       title: {
@@ -30,6 +29,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       likes: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      dislikes: {
         allowNull: false,
         type: Sequelize.INTEGER
       },

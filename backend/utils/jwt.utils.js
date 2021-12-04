@@ -19,7 +19,7 @@ module.exports = {
     },
     getUserId: function (data) {
         if (data.length > 1) {
-            let token = data.split(' ')[2];
+            let token = data.split(' ')[1];
             try {
                 let decodedToken = jwt.verify(token, this.jwtTokenSign)
                 userId = decodedToken.userId

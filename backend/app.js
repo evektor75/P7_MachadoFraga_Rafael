@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user');
 const messagesRoutes = require('./routes/messages');
+const likesRoutes = require('./routes/likes');
 
 
 //instanciation serveur
@@ -25,5 +26,6 @@ app.use(bodyParser.json());
 //Routes
 app.use('/api/auth', userRoutes);
 app.use('/api', messagesRoutes);
+app.use('/api', likesRoutes);
 
 module.exports = app;
