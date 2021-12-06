@@ -16,20 +16,19 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-user"></i></span>
 						</div>
-						<input id="email" type="email" class="form-control" placeholder="utilisateur@groupomania.com">
-						
+						<input id="email" type="email" class="form-control" v-model="login.email" placeholder="utilisateur@groupomania.com">
 					</div>
 					<div class="input-group form-group">
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-key"></i></span>
 						</div>
-						<input id="password" type="password" class="form-control" placeholder="Mot de passe">
+						<input id="password" type="password" v-model="login.password" class="form-control" placeholder="Mot de passe">
 					</div>
 					<div class="row align-items-center remember">
 						<input type="checkbox">Se souvenir de moi
 					</div>
 					<div class="form-group">
-						<input type="submit" value="Connexion" class="btn float-right login_btn">
+						<input type="submit" @click.prevent="sendLogin" value="Connexion" class="btn float-right login_btn">
 					</div>
 				</form>
 			</div>
@@ -47,8 +46,16 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapState } from "vuex";
+
 export default {
    name : "Login",
+   data() {
+	   return {
+		   
+	   }
+   }
    props: {
        mail : {
            type: String
