@@ -5,8 +5,12 @@ const jwtUtils = require('../utils/jwt.utils');
 //Constantes
 const CONTENT_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
 
+
 //Fonctions
+    //Fonction de commentaire 
+
 exports.comment = (req, res, next) => {
+    
     //identification de l'utilisateur
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
@@ -40,12 +44,22 @@ exports.comment = (req, res, next) => {
                                 content: comment
                             })
                                 .then(newComment => {
-                                    console.log(newComment.content);
-                                    //Mettre un findOne
-                                    models.Message.update({
-                                        comment: newComment.content
-                                    })
+                                            console.log(newComment.content);
+                                            models.Message.update({
+                                                where: {
+                                                    messageId: messageId,
+                                                    userId: userId,
+                                                },
+                                                comment: newComment.content
+                                            })
+                                            .then( () => res.status(200).json({'message': 'commentaire actualisé'}))
+                                            .catch( (err) => res.status(500).json({'error' : 'impossible de mettre a jour le com ' + err}))
+                                        
+        
+                                   
                                 })
+                                    
+    
                                 .catch(err => res.status(500).json(err))
 
                         } else {

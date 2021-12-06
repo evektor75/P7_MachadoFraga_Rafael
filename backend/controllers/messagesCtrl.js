@@ -62,26 +62,15 @@ exports.createMessage = (req, res, next) => {
 
 //Lister les posts
 exports.listMessages = (req, res, next) => {
-    const fields = req.query.fields;
-    const limit = parseInt(req.query.limit);
-    const offset = parseInt(req.query.offset);
-    const order = req.query.order;
-
-    if (limit > ITEMS_LIMIT) {
-        limit = ITEMS_LIMIT;
-    }
-
     models.Message.findAll({
-        order: [(order != null) ? order.split(':') : ['title', 'ASC']],
-        attributes: (fields !== '*' && fields != null) ? fields.split(',') : null,
-        limit: (!isNaN(limit)) ? limit : null,
-        offset: (!isNaN(offset)) ? offset : null,
         include: [{
             model: models.User,
             attributes: ['username']
-        }]
+        }],
+        order: [['createdAt', 'DESC']]
     }).then(messages => {
         if (messages) {
+            console.log(messages.length);
             res.status(200).json(messages);
         } else {
             res.status(404).json({ 'error': 'pas de publication trouvée' });
@@ -90,6 +79,10 @@ exports.listMessages = (req, res, next) => {
     }).catch(err => res.status(500).json({ err }));
     
 }
+
+//TODO Modification d'un post
+
+
 
 //Supprimer un post
 exports.delete = (req, res, next) => {

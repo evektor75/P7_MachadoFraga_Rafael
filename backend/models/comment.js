@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, DataTypes
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       models.User.belongsToMany(models.Message, {
         through: models.Comment,
         foreignKey: 'userId',
-        otherKey:'messageId'
+        otherKey: 'messageId'
       });
 
       models.Message.belongsToMany(models.User, {
         through: models.Comment,
-        foreignKey:'messageId',
+        foreignKey: 'messageId',
         otherKey: 'userId'
       });
 
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'User',
         key: 'id'
-      } 
+      }
     },
     content: DataTypes.STRING
   }, {

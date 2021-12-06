@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.belongsToMany(models.Message, {
         through: models.Dislike,
         foreignKey: 'userId',
-        otherKey: 'messageId'
+        otherKey:'messageId'
       });
 
       models.Message.belongsToMany(models.User, {
@@ -30,15 +30,14 @@ module.exports = (sequelize, DataTypes) => {
 
       models.Dislike.belongsTo(models.Message, {
         foreignKey: 'messageId',
-        as: 'message',
-        onDelete: 'CASCADE'
+        as: 'message'
       });
 
     }
   };
   Dislike.init({
     messageId: {
-      type: DataTypes.INTEGER,
+      type:DataTypes.INTEGER,
       references: {
         model: 'Message',
         key: 'id'
@@ -47,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'User',
+        model:'User',
         key: 'id'
       }
     }

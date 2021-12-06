@@ -104,8 +104,6 @@ exports.dislike = (req, res, next) => {
                 })
                     .then(userFound => {
                         if (userFound) {
-                            console.log(userId);
-                            console.log(messageId);
                             models.Dislike.findOne({
                                 where: {
                                     userId: userId,

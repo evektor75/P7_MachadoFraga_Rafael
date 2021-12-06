@@ -11,6 +11,7 @@ const BIO_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
 
 //Fonctions
 
+//S'inscire
 exports.signup = (req, res, next) => {
     const email = req.body.email;
     const username = req.body.username;
@@ -84,6 +85,7 @@ exports.signup = (req, res, next) => {
 
 }
 
+//Se connecter
 exports.login = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -93,7 +95,7 @@ exports.login = (req, res, next) => {
     }
 
 
-    //TODO verify pseudo lenght, mail regex, password etc
+
 
     models.User.findOne({
         where: { email: email }
@@ -123,6 +125,8 @@ exports.login = (req, res, next) => {
 
 };
 
+//Obtenir un profil
+
 exports.getUserProfile = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
     models.User.findOne({
@@ -135,6 +139,9 @@ exports.getUserProfile = (req, res, next) => {
         });
 
 }
+
+
+//Mettre à jour la bio
 
 exports.updateUserProfile = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
@@ -169,4 +176,30 @@ exports.updateUserProfile = (req, res, next) => {
 
 }
 
+//Supprimer profil
+exports.deleteUser = (req, res, next) => {
+    let userId = jwtUtils.getUserId(req.headers.authorization);
+    if (userId != null) {
+        models.User.findOne({
+            where: { id: userId }
+        })
+            .then(userFound => {
+                models.Message.destroy({
+                    where: { userId: userFound.id }
+                })
+                    .then(() => {
+                        models.User.destroy({
+                            where: { id: userFound.id }
+                        })
+                            .then(res.status(200).json('utilisateur supprimé'))
+                            .catch(() => res.status(500).json('immpossible de supprimer ' + userFound))
+                    })
+                    .catch(err => res.status(500).json(err))
+            })
+            .catch(err => res.status(500).json({'error' : 'utilisateur introuvable'}))
+       
+    } else {
+        res.status(404).json({ 'error': 'utilisateur inexistant' })
+    }
+}
 
