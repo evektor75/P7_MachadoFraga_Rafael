@@ -2,6 +2,7 @@
 const models = require('../models');
 const jwtUtils = require('../utils/jwt.utils');
 const fs = require('fs');
+const { url } = require('inspector');
 
 
 
@@ -19,6 +20,7 @@ exports.createMessage = (req, res, next) => {
     //Params
     const title = req.body.title;
     const content = req.body.content;
+    let urlAttachment ;
 
     if (title == null || content == null) {
         return res.status(400).json({ 'error': 'Champ manquant' });
@@ -34,21 +36,32 @@ exports.createMessage = (req, res, next) => {
         where: { id: userId }
     })
         .then(function (userFound) {
-            if (userFound) {
-                models.Message.create({
-                    title: title,
-                    content: content,
-                    likes: 0,
-                    dislikes: 0,
-                    UserId: userFound.id
-                })
-                    .then(function (newMessage) {
-                        if (newMessage) {
-                            return res.status(201).json(newMessage);
-                        } else {
-                            return res.status(500).json({ 'error': 'impossible de poster' });
-                        }
+            if (userFound !== null) {
+                if(req.file != undefined) {
+                     urlAttachment = `${req.protocol}://${req.get('host')}/images/${req.file.filename}}`;
+                } else {
+                    urlAttachment == null ;
+                };
+                if((content == 'null' && urlAttachment == null)) {
+                    res.status(400).json({'error' : 'Impossible de publier car rien est rempli'})
+                } else {
+                    models.Message.create({
+                        title: title,
+                        content: content,
+                        attachement: urlAttachment,
+                        likes: 0,
+                        dislikes: 0,
+                        UserId: userFound.id
                     })
+                        .then(function (newMessage) {
+                            if (newMessage) {
+                                return res.status(201).json(newMessage);
+                            } else {
+                                return res.status(500).json({ 'error': 'impossible de poster' });
+                            }
+                        })
+                };
+               
 
             } else {
                 res.status(404).json({ 'error': 'utilisateur introuvable' });
@@ -56,7 +69,7 @@ exports.createMessage = (req, res, next) => {
 
         })
         .catch(function (err) {
-            return res.status(500).json({ 'error': 'vérification impossible' });
+            return res.status(500).json({ 'error': 'vérification impossible' + err });
         })
 }
 

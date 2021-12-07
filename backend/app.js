@@ -1,6 +1,7 @@
 //Imports
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 
 const userRoutes = require('./routes/user');
@@ -30,4 +31,5 @@ app.use('/api', messagesRoutes);
 app.use('/api', likesRoutes);
 app.use('/api', commentsRoutes);
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 module.exports = app;
