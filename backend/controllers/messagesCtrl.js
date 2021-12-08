@@ -33,6 +33,7 @@ exports.createMessage = (req, res, next) => {
     }
 
     models.User.findOne({
+        attributes: ['id', 'email', 'username'],
         where: { id: userId }
     })
         .then(function (userFound) {
@@ -83,7 +84,6 @@ exports.listMessages = (req, res, next) => {
         order: [['createdAt', 'DESC']]
     }).then(messages => {
         if (messages) {
-            console.log(messages.length);
             res.status(200).json(messages);
         } else {
             res.status(404).json({ 'error': 'pas de publication trouvée' });
@@ -92,6 +92,8 @@ exports.listMessages = (req, res, next) => {
     }).catch(err => res.status(500).json({ err }));
     
 }
+
+
 
 //TODO Modification d'un post
 
