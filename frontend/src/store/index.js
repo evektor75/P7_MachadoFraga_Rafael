@@ -55,7 +55,7 @@ export default new Vuex.Store({
     getUserProfile(content) {
       axios.get("http://localhost:3000/api/auth/compte", {
         headers: {
-          authorization: "Bearer" + localStorage.getItem('userToken')
+          authorization: "Bearer " + localStorage.getItem('userToken')
         }
       })
         .then( res => {content.commit('userInformations', [res.data.username, res.data.id, res.data.email, res.data.bio, res.data.isAdmin])})

@@ -1,6 +1,5 @@
 <template>
 	<div class="container">
-	
 		<div class="d-flex justify-content-center h-100">
 	
 			<div class="card">
@@ -60,7 +59,10 @@
 				</div>
 	
 				<div class="card-footer">
-	
+					<div class="text-danger" v-if="msg !== null">
+					{{this.msg}}
+					</div>
+
 					<div class="d-flex justify-content-center links">
 	
 						Vous n'avez pas encore de compte?
@@ -87,10 +89,10 @@ export default {
 	data() {
 		return {
 			login: {
-				email: '',
-				password: ''
+				email: null,
+				password: null
 			},
-			msg: ""
+			msg: null
 		};
 	},
 	computed: {
@@ -98,7 +100,7 @@ export default {
 	},
 	methods: {
 		sendLogin() {
-			if (this.login.email !== null || this.login.password !== null) {
+			if (this.login.email !== null && this.login.password !== null) {
 				axios.post("http://localhost:3000/api/auth/login", this.login)
 					.then(res => {
 						localStorage.setItem('userToken', res.data.token);
@@ -109,9 +111,10 @@ export default {
 						console.log('Connexion impossible ! ' + err);
 					})
 			} else {
-				alert('Un problème est survenu dans vos saisis');
+				this.msg = "Paramètre invalide";
 			}
-		}
+		},
+	
 	}
 };
 </script>
@@ -202,6 +205,9 @@ input:focus {
 
 .links a {
 	margin-left: 4px;
+}
+.error {
+	border: 1px solid red;
 }
 
 @media all and (min-width: 992px) {

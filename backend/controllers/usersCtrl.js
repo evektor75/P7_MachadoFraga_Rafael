@@ -1,6 +1,5 @@
 //Imports 
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const jwtUtils = require('../utils/jwt.utils');
 const models = require('../models');
 
@@ -120,7 +119,7 @@ exports.login = (req, res, next) => {
 
         })
         .catch(function (err) {
-            return res.status(500).json({ 'error': `impossible de vérifier l'utilisateur` });
+            return res.status(500).json({ 'error': `email incorrect` });
         });
 
 };
@@ -293,6 +292,7 @@ exports.updateAccount = async(req, res, next) => {
 //Supprimer profil
 exports.deleteUser = (req, res, next) => {
     let userId = jwtUtils.getUserId(req.headers.authorization);
+    console.log(`l'utilisateur est ` + userId);
     if (userId != null) {
         models.User.findOne({
             where: { id: userId }

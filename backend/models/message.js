@@ -11,10 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.Message.belongsTo(models.User, {
-        foreignKey: {
-          allowNull: false
-        }
+      this.belongsTo(models.User, {
+        foreignKey: 'UserId'
       })
     }
   };
@@ -24,7 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     attachment: DataTypes.STRING,
     comment:DataTypes.STRING,
     likes: DataTypes.INTEGER,
-    dislikes: DataTypes.INTEGER
+    UserId: DataTypes.INTEGER,
+    dislikes: DataTypes.INTEGER,
+   
   }, {
     sequelize,
     modelName: 'Message',

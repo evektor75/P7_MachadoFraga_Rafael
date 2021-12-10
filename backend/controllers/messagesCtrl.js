@@ -20,7 +20,7 @@ exports.createMessage = (req, res, next) => {
     //Params
     const title = req.body.title;
     const content = req.body.content;
-    let urlAttachment ;
+    let urlAttachment;
 
     if (title == null || content == null) {
         return res.status(400).json({ 'error': 'Champ manquant' });
@@ -38,13 +38,13 @@ exports.createMessage = (req, res, next) => {
     })
         .then(function (userFound) {
             if (userFound !== null) {
-                if(req.file != undefined) {
-                     urlAttachment = `${req.protocol}://${req.get('host')}/images/${req.file.filename}}`;
+                if (req.file != undefined) {
+                    urlAttachment = `${req.protocol}://${req.get('host')}/images/${req.file.filename}}`;
                 } else {
-                    urlAttachment == null ;
+                    urlAttachment == null;
                 };
-                if((content == 'null' && urlAttachment == null)) {
-                    res.status(400).json({'error' : 'Impossible de publier car rien est rempli'})
+                if ((content == 'null' && urlAttachment == null)) {
+                    res.status(400).json({ 'error': 'Impossible de publier car rien est rempli' })
                 } else {
                     models.Message.create({
                         title: title,
@@ -62,7 +62,7 @@ exports.createMessage = (req, res, next) => {
                             }
                         })
                 };
-               
+
 
             } else {
                 res.status(404).json({ 'error': 'utilisateur introuvable' });
@@ -75,6 +75,21 @@ exports.createMessage = (req, res, next) => {
 }
 
 //Lister les posts
+/*exports.listMessages = (req, res, next) => {
+    models.Message.findAll({
+        include: ['User'],
+        order: [['createdAt', 'DESC']]
+    }).then(messages => {
+            if (messages) {
+                res.status(200).json(messages);
+            } else {
+                res.status(404).json({ 'error': 'pas de publication trouvée' });
+            }
+
+        }).catch(err => res.status(500).json({ err }));
+
+}*/
+
 exports.listMessages = (req, res, next) => {
     models.Message.findAll({
         include: [{
@@ -82,17 +97,16 @@ exports.listMessages = (req, res, next) => {
             attributes: ['username']
         }],
         order: [['createdAt', 'DESC']]
-    }).then(messages => {
-        if (messages) {
-            res.status(200).json(messages);
+    })
+    .then( posts => {
+        if(posts.length > null) {
+            res.status(200).json(posts);
         } else {
-            res.status(404).json({ 'error': 'pas de publication trouvée' });
+            res.status(404).json({ 'error' : 'Pas de message à afficher'});
         }
-
-    }).catch(err => res.status(500).json({ err }));
-    
+    })
+    .catch( err => res.status(500).json(err))
 }
-
 
 
 //TODO Modification d'un post

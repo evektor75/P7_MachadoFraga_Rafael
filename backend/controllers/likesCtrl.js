@@ -69,7 +69,7 @@ exports.like = (req, res, next) => {
                     })
                     .catch(err => res.status(500).json({ 'error': `impossible de vérifier l'utilisateur` + err }));
             } else {
-                res.status(404).json({ 'error': 'message déjà disliké' })
+                res.status(404).json({ 'error': 'message déjà liké' })
             }
         })
         .catch(err => res.status(500).json({ 'error': 'impossible de vérifier le message' + err }));

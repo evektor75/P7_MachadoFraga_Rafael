@@ -3,7 +3,7 @@
     
         <createPost/>
     
-        <post v-for="message in messages" v-bind:key="message.id" :post="message" @infosMessage="messageInfos"/>
+        <post v-for="message in messages" v-bind:key="message.id" :message="message" @infosMessage="messageInfos"/>
     
     </div>
 </template>
