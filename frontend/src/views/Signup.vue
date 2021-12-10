@@ -1,5 +1,8 @@
 <template>
 	<div class="container">
+		<div class="return">
+			<router-link to="/"><font-awesome-icon class="returnLogo" :icon="['fas','chevron-left']"/></router-link>
+		</div>
 	
 		<div class="d-flex justify-content-center h-100">
 	
@@ -75,17 +78,6 @@
 	
 						</div>
 	
-						<div class="input-group form-group">
-	
-							<div class="input-group-prepend">
-	
-								<span class="input-group-text"><i class="fas fa-key"></i></span>
-	
-							</div>
-	
-							<input id="confirmPassword" type="password" class="form-control" placeholder="Vérification du mot de passe">
-	
-						</div>
 	
 						<div class="form-group">
 	
@@ -105,18 +97,19 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import axios from "axios";
+import { mapState } from "vuex";
+
 
 export default {
 	name: "signup",
 	data() {
 		return {
 			signup: {
-				username: null,
-				email: null,
-				password: null,
-				bio: null
+				username: '',
+				email: '',
+				password: '',
+				bio: ''
 			},
 			msg: ""
 		};
@@ -128,22 +121,54 @@ export default {
 		sendSignup() {
 			const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 			const regexEmail = /^[a-z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-			const usernameRegex = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
-			const bioRegex = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
+			//const bioRegex = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
+			
+			//Infos saisies
+			const password = this.signup.password;
+			const email = this.signup.email;
+			//const bio = this.signup.bio;
+			const username = this.signup.username;
+
+			console.log(this.signup.password);
+			console.log(this.signup.username);
+			console.log(this.signup.email);
+			console.log(this.signup.bio);
+
+			
 			if (
-				(this.signup.email !== null || this.signup.username !== null || this.signup.password !== null) && (regexPassword.test(this.signup.password) && regexEmail.test(this.signup.email) && usernameRegex.test(this.signup.username) && bioRegex.test(this.signup.bio))
-			) {
-				axios.post("http://localhost:3000/api/auth/signup", this.signup)
+				(email !== null || username !== null || password !== null)
+			) 
+				{
+					if( regexEmail.test(email) && regexPassword.test(password)) {
+					axios.post("http://localhost:3000/api/auth/signup", this.signup)
 					.then(res => {
-						console.log(res)
+						console.log(res);
+						axios.post("http://localhost:3000/api/auth/login", this.signup)
+						.then(res => {
+						localStorage.setItem('userToken', res.data.token);
+						this.$router.push('/feed');
+						
+					})
+					.catch(err => {
+						console.log('Connexion impossible ! ' + err);
+					})
+						//on réinitialise les saisies
 						this.signup.email = null;
 						this.signup.username = null;
 						this.signup.bio = null;
 						this.signup.password = null;
+						
+
 					})
 					.catch(err => console.log(err));
+				} else {
+					console.log("impossible d'effectuer les regex")
+				}
+				
 			} else {
-				alert("oops ! Un problème est survenue avec vos saisies");
+					console.log(" Un problème est survenue avec vos saisies" );
+
+				
 			}
 
 		}
@@ -158,13 +183,15 @@ export default {
 
 .return {
 	position: absolute;
-	left: 15px;
-	top: 15px;
+	left: 35px;
+	top: 85px;
 	width: 1.5em;
 	height: 1.5em;
+	
 }
 
-.return i {
-	size: 1.5rem;
+.returnLogo {
+	font-size: 1.8rem;
+	color:black;
 }
 </style>

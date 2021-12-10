@@ -140,41 +140,155 @@ exports.getUserProfile = (req, res, next) => {
 
 }
 
-
-//Mettre à jour la bio
-
-exports.updateUserProfile = (req, res, next) => {
+//Modifier un compte
+exports.updateAccount = async(req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
     //Params
     const bio = req.body.bio;
-    models.User.findOne({
-        attributes: ['id', 'bio'],
-        where: { id: userId }
-    }).then(function (userFound) {
-        if (userFound) {
-            userFound.update({
-                bio: (bio ? bio : userFound.bio)
-            }).then(function () {
-                if (userFound) {
-                    return res.status(201).json(userFound);
-                } else {
-                    return res.status(500).json({ 'error': 'impossible de metre a jour la bio' });
-                }
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
 
-            }).catch(function (err) {
-                res.status(500).json({ 'error': `impossible de mettre à jour la bio` + err });
-            })
-        } else {
-            res.status(404).json({ 'error': 'utilisateur introuvable' });
+    try {
+        if (bio) {
+            if (BIO_REGEX.test(bio)) {
+                models.User.findOne({
+                    attributes: ['id', 'bio'],
+                    where: { id: userId }
+                })
+                    .then(userFound => {
+                        if (userFound) {
+                            userFound.update({
+                                bio: (bio ? bio : userFound.bio)
+
+                            })
+                                .then(() => {
+                                    if (userFound) {
+                                        return res.status(201).json(userFound);
+
+                                    } else {
+                                        return res.status(501).json({ 'error': 'impossible de metre a jour la bio' });
+                                    }
+                                })
+                                .catch(() => res.status(500).json({ 'error': `impossible d'actualiser la bio` }))
+                        } else {
+                            return res.status(404).json({ 'error': 'utilisateur introuvable' });
+                        }
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ 'error': `utilisateur non trouvés` + err });
+                    })
+            } else {
+                return res.status(500).json({ 'error': 'bio regex impossible' });
+            }
         }
 
-    })
-        .catch(function (err) {
-            return res.status(500).json({ 'error': `impossible d'accéder à l'utilisateur` + err });
-        });
+        if (email) {
+            if (EMAIL_REGEX.test(email)) {
+                models.User.findOne({
+                    attributes: ['id', 'email'],
+                    where: { id: userId }
+                })
+                    .then(userFound => {
+                        console.log(userFound.email);
+                        if (userFound.email == email) {
+                            return res.status(500).json({ 'error': 'les emails sont identiques' });
+                        } else {
+                            userFound.update({
+                                email: (email ? email : userFound.email)
+                            })
+                                .then(() => {
+                                    if (userFound) {
+                                        return res.status(201).json(userFound);
+                                    } else {
+                                        return res.status(500).json({ 'error': 'impossible de metre a jour email' });
+                                    }
+                                })
+                                .catch(err => res.status(502).json(err))
+                        }
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ 'error': `impossible de trouver l'utilisateur` + err });
+                    })
+            } else {
+                return res.status(404).json({ 'error': 'utilisateur introuvable' });
+            }
+        }
+
+        if (username) {
+            if (BIO_REGEX.test(username)) {
+                models.User.findOne({
+                    attributes: ['id', 'username'],
+                    where: { id: userId }
+                })
+                    .then(userFound => {
+                        console.log(userFound.username);
+                        if (userFound.username == username) {
+                            return res.status(500).json({ 'error': 'les pseudos sont identiques' });
+                        } else {
+                            userFound.update({
+                                username: (username ? username : userFound.username)
+                            })
+                                .then(() => {
+                                    if (userFound) {
+                                        return res.status(201).json(userFound);
+                                    } else {
+                                        return res.status(500).json({ 'error': 'impossible de metre a jour le pseudo' });
+                                    }
+                                })
+                                .catch(err => res.status(502).json(err))
+                        }
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ 'error': `impossible de trouver l'utilisateur` + err });
+                    })
+            } else {
+                return res.status(404).json({ 'error': 'utilisateur introuvable' });
+            }
+        }
+
+
+        if (password) {
+            if (PASSWORD_REGEX.test(password)) {
+                models.User.findOne({
+                    attributes: ['id', 'username'],
+                    where: { id: userId }
+                })
+                    .then(userFound => {
+                        bcrypt.compare(password, userFound.password, (resCompare) => {
+                            if (resCompare) {
+                                return res.status(400).json({ 'error': 'Les mots de passes sont identiques' });
+                            } else {
+                                bcrypt.hash(newPassword, 10, function (err, bcryptNewPassword) {
+                                    models.User.update({ password: bcryptNewPassword },
+                                        { where: { id: userId } })
+                                        .then(() => res.status(201).json({ 'message': 'Mot de passe modifié' }))
+                                        .catch(err => res.status(500).json({ 'error': err }))
+                                })
+
+                            }
+                        })
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ 'error': `impossible de trouver l'utilisateur` + err });
+                    })
+
+            } else {
+                return res.status(404).json({ 'error': 'utilisateur introuvable' });
+            }
+        }
+
+    }
+    catch {
+        return res.status(404);
+    }
+
 
 }
+
+
+
 
 //Supprimer profil
 exports.deleteUser = (req, res, next) => {
@@ -196,8 +310,8 @@ exports.deleteUser = (req, res, next) => {
                     })
                     .catch(err => res.status(500).json(err))
             })
-            .catch(err => res.status(500).json({'error' : 'utilisateur introuvable'}))
-       
+            .catch(err => res.status(500).json({ 'error': 'utilisateur introuvable' }))
+
     } else {
         res.status(404).json({ 'error': 'utilisateur inexistant' })
     }
