@@ -1,4 +1,5 @@
 //Imports
+const { is } = require('sequelize/dist/lib/operators');
 const models = require('../models');
 const jwtUtils = require('../utils/jwt.utils');
 
@@ -7,71 +8,65 @@ const CONTENT_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
 
 
 //Fonctions
-    //Fonction de commentaire 
+//Fonction de commentaire 
 
+//Création du commentaire
 exports.comment = (req, res, next) => {
-    
+
     //identification de l'utilisateur
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
     //Params
-    const comment = req.body.comment;
+    const newComment = req.body.content;
     const messageId = parseInt(req.params.messageId);
 
 
-    if (comment == null) {
+    if (newComment == null) {
         return res.status(400).json({ 'error': 'Champ manquant' });
     }
-    if (CONTENT_REGEX.test(comment)) {
+    if (CONTENT_REGEX.test(newComment)) {
         return res.status(400).json({ 'error': 'Pas de caractères spéciaux' });
     }
 
-    models.Message.findOne({
-        where: { id: messageId }
+    models.Comment.create({
+        messageId: messageId,
+        userId: userId,
+        content: req.body.content
     })
-        .then(messageFound => {
-            if (messageFound) {
-                models.User.findOne({
-                    where: { id: userId }
+        .then(comment => {
+            res.status(201).json({ comment })
+        })
+        .catch(err => res.status(500).json({ err }))
 
+
+}
+
+//Suppression du commentaire 
+
+exports.deleteComment = (req, res, next) => {
+    const userId = jwtUtils.getUserId(req.headers.authorization);
+    const userOrder = req.body.userIdOrder;
+
+    models.User.findOne({
+        attributes: ["id", "email", "username", "isAdmin"],
+        where: { id: userId }
+    })
+        .then(userFound => {
+            if (userFound && (userFound.isAdmin == true || userFound.id == userOrder)) {
+                models.Comment.findOne({
+                    where: { id: req.params.id }
                 })
-                    .then(userFound => {
-                        if (userFound) {
-                            console.log('le messagId est = ' + messageId);
-                            models.Comment.create({
-                                messageId: messageId,
-                                userId: userId,
-                                content: comment
-                            })
-                                .then(newComment => {
-                                            console.log(newComment.content);
-                                            models.Message.update({
-                                                where: {
-                                                    messageId: messageId,
-                                                    userId: userId,
-                                                },
-                                                comment: newComment.content
-                                            })
-                                            .then( () => res.status(200).json({'message': 'commentaire actualisé'}))
-                                            .catch( (err) => res.status(500).json({'error' : 'impossible de mettre a jour le com ' + err}))
-                                        
-        
-                                   
-                                })
-                                    
-    
-                                .catch(err => res.status(500).json(err))
-
-                        } else {
-                            res.status(404).json({ 'error': 'utilisateur introuvable' });
-                        }
-
+                    .then(commentFound => {
+                        models.Comment.destroy({
+                            where: { id: commentFound.id }
+                        })
+                            .then(() => res.status(200).json({ 'message': 'commentaire supprimé' }))
+                            .catch(err => res.status(500).json({ 'error': 'impoosible de supprimer le com' + err }))
                     })
-                    .catch(function (err) {
-                        return res.status(500).json({ 'error': 'vérification impossible' });
-                    })
+                    .catch(err => res.status(500).json({ 'error': 'commentaire introuvable' }))
+            } else {
 
             }
         })
-        .catch(err => res.status(500).json({ 'error': 'impossible de vérifier le message' + err }));
+        .catch(err => res.status(400).json({ 'error': 'utilisateur introuvable' + err }))
 }

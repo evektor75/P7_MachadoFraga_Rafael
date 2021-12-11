@@ -14,17 +14,21 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, {
         foreignKey: 'UserId'
       })
+      this.hasMany(models.Comment,
+        {
+          foreignKey: 'messageId',
+          onDelete: 'CASCADE'
+        });
     }
   };
   Message.init({
     title: DataTypes.STRING,
     content: DataTypes.STRING,
     attachment: DataTypes.STRING,
-    comment:DataTypes.STRING,
     likes: DataTypes.INTEGER,
     UserId: DataTypes.INTEGER,
     dislikes: DataTypes.INTEGER,
-   
+
   }, {
     sequelize,
     modelName: 'Message',

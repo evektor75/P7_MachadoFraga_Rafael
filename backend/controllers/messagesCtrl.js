@@ -2,14 +2,11 @@
 const models = require('../models');
 const jwtUtils = require('../utils/jwt.utils');
 const fs = require('fs');
-const { url } = require('inspector');
 
 
 
 //Constantes
 const CONTENT_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
-const ITEMS_LIMIT = 50;
-
 //Routes
 
 //Création d'un Post
@@ -92,7 +89,17 @@ exports.createMessage = (req, res, next) => {
 
 exports.listMessages = (req, res, next) => {
     models.Message.findAll({
-        include: ['User'],
+        include:[ {
+            model: models.User,
+            attributes: ['id', 'username', 'isAdmin']
+        },
+        {
+            model: models.Comment,
+            attributes: ['id', 'messageId', 'userId', 'content', 'createdAt'],
+            order: [['createdAt', 'DESC']]
+        }
+        ],
+      
         order: [['createdAt', 'DESC']]
     })
     .then( posts => {
