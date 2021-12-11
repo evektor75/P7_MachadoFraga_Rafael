@@ -1,8 +1,8 @@
 <template>
 <div class="card mb-4 w-75 mx-auto post">
   <div class="card-header d-flex justify-content-between">
-    <div class="card-header_name">De <span class="authorPost"> {{message.Users.username}} </span> le <span class="dayPost"> { {message.createdAt.split(' ')[0]} }</span> à <span class="timePost"> { {message.createdAt.split(' ')[1]} } </span></div>
-    <div class="card-header_dot" v-if="user.isAdmin == true || user.username == message.Users.username"><router-link to="/feed/modifypost"><font-awesome-icon :icon="['fas','bars']"/></router-link></div>
+    <div class="card-header_name">De <span class="authorPost"> {{message.User.username}} </span> le <span class="dayPost"> { {message.createdAt.split(' ')[0]} }</span> à <span class="timePost"> { {message.createdAt.split(' ')[1]} } </span></div>
+    <div class="card-header_dot" v-if="user.isAdmin == true || user.username == message.User.username"><router-link to="/feed/modifypost"><font-awesome-icon :icon="['fas','bars']"/></router-link></div>
     
   </div>
   <div class="card-body">

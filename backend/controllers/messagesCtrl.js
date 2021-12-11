@@ -92,10 +92,7 @@ exports.createMessage = (req, res, next) => {
 
 exports.listMessages = (req, res, next) => {
     models.Message.findAll({
-        include: [{
-            model: models.User,
-            attributes: ['username']
-        }],
+        include: ['User'],
         order: [['createdAt', 'DESC']]
     })
     .then( posts => {
