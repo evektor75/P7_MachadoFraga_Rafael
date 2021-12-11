@@ -33,16 +33,16 @@ import { mapState } from "vuex";
 export default {
     name :"post",
     data() {
-        return {};
+        return {
+            message: {
+                title: null,
+                content: null,
+                attachement:null
+            }
+        };
     },
     computed: {
         ...mapState(["user", "editOption"])
-    },
-    props: {
-        message: {
-            type: Object,
-            required: true
-        }
     },
     methods: {
         emitInformationPost() {

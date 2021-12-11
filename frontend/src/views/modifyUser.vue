@@ -6,7 +6,7 @@
 <form>
   <div class="mb-3">
     <label for="modifyEmail" class="form-label">Adresse mail</label>
-    <textarea class="form-control" id="modifyEmail" type="email" v-model="user.email"> </textarea>
+    <textarea class="form-control" id="modifyEmail" type="email" v-model="user.email"></textarea>
     <div id="emailHelp" class="form-text" rows='1'></div>
   </div>
   <div class="mb-3">

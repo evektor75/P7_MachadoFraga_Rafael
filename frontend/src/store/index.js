@@ -17,7 +17,6 @@ export default new Vuex.Store({
       isAdmin: false
 
     },
-    messages: [],
     users: [],
     editOption:""
   },
