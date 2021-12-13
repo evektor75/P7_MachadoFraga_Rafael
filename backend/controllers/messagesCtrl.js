@@ -15,8 +15,8 @@ exports.createMessage = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
     //Params
-    const title = req.body.title;
-    const content = req.body.content;
+    let title = req.body.title;
+    let content = req.body.content;
     let urlAttachment;
 
     if (title == null || content == null) {
@@ -71,6 +71,7 @@ exports.createMessage = (req, res, next) => {
         })
 }
 
+
 //Lister les posts
 /*exports.listMessages = (req, res, next) => {
     models.Message.findAll({
@@ -89,27 +90,17 @@ exports.createMessage = (req, res, next) => {
 
 exports.listMessages = (req, res, next) => {
     models.Message.findAll({
-        include:[ {
-            model: models.User,
-            attributes: ['id', 'username', 'isAdmin']
-        },
-        {
-            model: models.Comment,
-            attributes: ['id', 'messageId', 'userId', 'content', 'createdAt'],
-            order: [['createdAt', 'DESC']]
-        }
-        ],
-      
+        include: ['User','Comments'],
         order: [['createdAt', 'DESC']]
     })
-    .then( posts => {
-        if(posts.length > null) {
-            res.status(200).json(posts);
-        } else {
-            res.status(404).json({ 'error' : 'Pas de message à afficher'});
-        }
-    })
-    .catch( err => res.status(500).json(err))
+        .then(posts => {
+            if (posts.length > null) {
+                res.status(200).json(posts);
+            } else {
+                res.status(404).json({ 'error': 'Pas de message à afficher' });
+            }
+        })
+        .catch(err => res.status(500).json(err))
 }
 
 

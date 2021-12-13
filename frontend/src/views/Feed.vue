@@ -54,20 +54,27 @@
             </div>
         <div class="content_border"></div>
             <div class="comment d-flex ">
-                <div class="mt-2 mr-2 comment_name">Nom</div>
-                <div class="mt-2 ml-2 comment_commentary">Commentaire</div>
+                <textarea type="text" id="commentSection" class="form-control" placeholder="Ecrivez votre commentaire" v-model="dataComment.content"></textarea>
+                <button type="submit" class="btn btn-primary" @click.prevent="createComment(item.id)" value="Commenter"></button>
+                <div class="thirdContainer">
+                    <ul>
+                    <li v-for="comment in item.Comments" :key="comment.id">
+                        <div class="mt-2 mr-2 comment_name">{{comment.User.username}}</div>
+                        <div class="mt-2 ml-2 comment_commentary">{{comment.content}}</div>
+                            <div class="moderationComment" v-if="user.id==comment.userId || user.isAdmin==true">
+                                <button @click.prevent="deleteComment(comment.id, comment.userId)" type="submit" class="btn btn-primary"></button>
+                                <font-awesome-icon :icon="['fas','trash']"/>
+                            </div>
+                    </li>
+                    </ul>
+
+                    
+                </div>
+                
         </div>
         </div>
         </div>
         </li>
-
-
-
-
-
-
-
-
     </ul>
   
  </div>   
@@ -85,6 +92,9 @@ export default {
                 title: null,
                 content: null,
                 attachment: null
+            },
+            dataComment:{
+                content: null
             },
             messages: [],
         };
@@ -128,15 +138,52 @@ export default {
 					}
 				})
 				.then( res => {
-					if(res) {
-						window.location.reload();
-					}
+                    console.log(res); 
 				})
 				.catch( err => this.msgError = err)
 			}
 		}, 
         onFilechange(content){
             this.message.attachement = content.target.files[0];
+        },
+
+        //création commentaire
+        createComment(messageId) {
+            if(this.dataComment.comment !==null) {
+                console.log(this.dataComment)
+                axios.post("http://localhost:3000/api/messages/:messageId/comment",
+                {
+                    content: this.dataComment.content,
+                    messageId: messageId
+                },
+                {
+                    headers: {
+						authorization: "Bearer " + window.localStorage.getItem("userToken")
+				}
+                }
+                )
+                .then( res => {
+                    console.log(res);
+                })
+                .catch(err => console.log(err))
+            }
+        },
+
+        //Suppression du commentaire
+        deleteComment(id, userIdOrder) {
+            if(window.confirm("Êtes vous sur de vouloir supprimer ce commentaire ?"))
+            axios.delete("http://localhost:3000/api/messages/:messageId/comment/:id", {
+                data: userIdOrder
+            },
+            {
+                headers: {
+						authorization: "Bearer " + window.localStorage.getItem("userToken")
+				}
+            }
+            
+            )
+            .then( res => console.log(res))
+            .catch(err => console.log(err))
         }
     },
 };

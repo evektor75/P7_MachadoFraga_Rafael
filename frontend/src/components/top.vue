@@ -6,12 +6,14 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse ml-5" id="navbarNavAltMarkup">
-      <div class="navbar-nav ">
+      <div class="navbar-nav">
         <router-link to="/" class="nav-link" v-if="user.token == null">Se connecter</router-link>
         <div id="userConnected" v-if="user.token !== null " >
-          <router-link to="/feed" class="nav-link">Mon Feed</router-link>
-        <router-link to="/user" class="nav-link" >Mon compte</router-link>
-        <button type="button" id="disconnect" class="btn btn-danger logout" @click.prevent="disconnect">Déconnexion</button>       
+          <div class="barre">
+            <router-link to="/feed" class="nav-link">Mon Feed</router-link>
+            <router-link to="/user" class="nav-link" >Mon compte</router-link>
+            <button type="button" id="disconnect" class="btn btn-danger logout" @click.prevent="disconnect">Déconnexion</button>       
+          </div>
         </div>
       </div>
     </div>
@@ -61,20 +63,24 @@ nav {
 img{
   width: 250px;
 }
-.barre{
-  display: flex;
-  justify-content: flex-end!important;
-  text-align: center;
-}
+
 
 .logout{
- width:115px;
+ width:125px;
   &:hover{
     font-weight:bold;
   }
 }
 .nav-link:hover {
   font-weight:bold;
+}
+
+@media all and (min-width:990px) {
+  .barre{
+    display: flex;
+    justify-content: flex-end!important;
+    text-align:center;
+  }
 }
 
 </style>

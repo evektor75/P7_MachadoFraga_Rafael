@@ -1,5 +1,4 @@
 //Imports
-const { is } = require('sequelize/dist/lib/operators');
 const models = require('../models');
 const jwtUtils = require('../utils/jwt.utils');
 
