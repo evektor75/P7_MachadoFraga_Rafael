@@ -13,12 +13,10 @@ const CONTENT_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
 exports.comment = (req, res, next) => {
 
     //identification de l'utilisateur
-    const userId = jwtUtils.getUserId(req.headers.authorization);
-
+    let userId = jwtUtils.getUserId(req.headers.authorization);
     //Params
     const newComment = req.body.content;
-    const messageId = parseInt(req.params.messageId);
-
+    
 
     if (newComment == null) {
         return res.status(400).json({ 'error': 'Champ manquant' });
@@ -28,7 +26,7 @@ exports.comment = (req, res, next) => {
     }
 
     models.Comment.create({
-        messageId: messageId,
+        messageId: req.body.messageId,
         userId: userId,
         content: req.body.content
     })
@@ -43,15 +41,16 @@ exports.comment = (req, res, next) => {
 //Suppression du commentaire 
 
 exports.deleteComment = (req, res, next) => {
-    const userId = jwtUtils.getUserId(req.headers.authorization);
-    const userOrder = req.body.userIdOrder;
-
+    let userOrder = req.body.userIdOrder;
+    let userId = jwtUtils.getUserId(req.headers.authorization);
+   
     models.User.findOne({
         attributes: ["id", "email", "username", "isAdmin"],
         where: { id: userId }
     })
         .then(userFound => {
             if (userFound && (userFound.isAdmin == true || userFound.id == userOrder)) {
+                console.log("Suppresion du commentaire : ", req.params.id);
                 models.Comment.findOne({
                     where: { id: req.params.id }
                 })

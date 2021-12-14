@@ -1,12 +1,11 @@
 //Import
 const jwt = require('jsonwebtoken');
-const JWT_SIGN_SECRET = '$2y$10$HjZKDFIqaCKFeqsSyNs9beqHaEtNEmvgYHNGqknh7tXbVESB1mmPy';
-
+require('dotenv').config();
 //Fonction à exporter
 
 
 module.exports = {
-    jwtTokenSign : '$2y$10$HjZKDFIqaCKFeqsSyNs9beqHaEtNEmvgYHNGqknh7tXbVESB1mmPy',
+    jwtTokenSign : process.env.JWT_SIGN_SECRET,
     generateTokenForUser: function (userData) {
         return jwt.sign({
             userId: userData.id,
@@ -18,6 +17,7 @@ module.exports = {
             })
     },
     getUserId: function (data) {
+        console.log(data);
         if (data.length > 1) {
             let token = data.split(' ')[1];
             try {

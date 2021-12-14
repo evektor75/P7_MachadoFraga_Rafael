@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="return">
-			<router-link to="/"><font-awesome-icon class="returnLogo" :icon="['fas','chevron-left']"/></router-link>
+			<router-link to="/login"><font-awesome-icon class="returnLogo" :icon="['fas','chevron-left']"/></router-link>
 		</div>
 	
 		<div class="d-flex justify-content-center h-100">

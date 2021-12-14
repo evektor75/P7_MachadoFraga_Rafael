@@ -8,7 +8,7 @@ const multer = require('../utils/multer-config');
 
 router.post('/messages/new', multer, messagesCtrl.createMessage);
 router.get('/messages', messagesCtrl.listMessages);
-router.delete('/messages/:messageId/delete', messagesCtrl.delete);
+router.delete('/messages/:id', messagesCtrl.delete);
 
 //Export
 module.exports = router;

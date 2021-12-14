@@ -129,18 +129,36 @@ exports.login = (req, res, next) => {
 exports.getUserProfile = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
     models.User.findOne({
-        attributes: ['id', 'email', 'username', 'bio'],
+        attributes: ['id', 'email', 'username', 'bio','isAdmin'],
         where: { id: userId }
     })
-        .then(user => res.status(200).json({ user }))
+        .then(user => res.status(200).json({user}))
         .catch(function (err) {
             res.status(500).json({ 'error': `impossible d'accéder à l'utilisateur` + err });
         });
 
 }
 
+//Obtenir tous les profils
+exports.getAllProfiles = (req, res, next) => {
+    models.User.findAll({
+        include: [
+            {
+                model: models.Message,
+                attributes: ['id'],
+            }
+        ]
+    })
+        .then(usersFound => {
+            res.status(200).json({ usersFound })
+        })
+        .catch(err => {
+            res.status(400).json({ err })
+        })
+}
+
 //Modifier un compte
-exports.updateAccount = async(req, res, next) => {
+exports.updateAccount = async (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
     //Params

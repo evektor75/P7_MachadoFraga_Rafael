@@ -7,7 +7,7 @@
     </button>
     <div class="collapse navbar-collapse ml-5" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <router-link to="/" class="nav-link" v-if="user.token == null">Se connecter</router-link>
+        <router-link to="/login" class="nav-link" v-if="user.token == null">Se connecter</router-link>
         <div id="userConnected" v-if="user.token !== null " >
           <div class="barre">
             <router-link to="/feed" class="nav-link">Mon Feed</router-link>
@@ -32,14 +32,14 @@ export default {
     disconnect() {
       localStorage.clear();
       location.replace(location.origin);
-      this.$router.push('/');
+      this.$router.push('/login');
     },
     alreadyConnected() {
     if(this.user.token !== null ) {
       alert('Vous êtes déja connecté');
       this.$router.push('/feed');
     } else {
-      this.$router.push('/');
+      this.$router.push('/login');
     }
     
   }

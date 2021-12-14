@@ -49,7 +49,7 @@ exports.createMessage = (req, res, next) => {
                         attachement: urlAttachment,
                         likes: 0,
                         dislikes: 0,
-                        UserId: userFound.id
+                        userId: userFound.id
                     })
                         .then(function (newMessage) {
                             if (newMessage) {
