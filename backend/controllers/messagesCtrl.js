@@ -6,7 +6,7 @@ const fs = require('fs');
 
 
 //Constantes
-const CONTENT_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
+const CONTENT_REGEX = /^[a-zA-Z0-9 ]*$/;
 //Routes
 
 //Création d'un Post
@@ -25,7 +25,10 @@ exports.createMessage = (req, res, next) => {
     if (title.length <= 2 || content.length <= 4) {
         return res.status(400).json({ 'error': 'Le titre et le contenu doivent contenir respectivement 2 et 4 caractères au minimum' });
     }
-    if (CONTENT_REGEX.test(content)) {
+    if (!CONTENT_REGEX.test(content)) {
+        return res.status(400).json({ 'error': 'Pas de caractères spéciaux' });
+    }
+    if (!CONTENT_REGEX.test(title)){
         return res.status(400).json({ 'error': 'Pas de caractères spéciaux' });
     }
 
@@ -36,19 +39,19 @@ exports.createMessage = (req, res, next) => {
         .then(function (userFound) {
             if (userFound !== null) {
                 if (req.file != undefined) {
-                    urlAttachment = `${req.protocol}://${req.get('host')}/images/${req.file.filename}}`;
+                    urlAttachment = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                 } else {
                     urlAttachment == null;
                 };
-                if ((content == 'null' && urlAttachment == null)) {
+                if ((content == 'null' && title == null)) {
                     res.status(400).json({ 'error': 'Impossible de publier car rien est rempli' })
                 } else {
+                    console.log(urlAttachment);
                     models.Message.create({
                         title: title,
                         content: content,
-                        attachement: urlAttachment,
+                        attachment: urlAttachment,
                         likes: 0,
-                        dislikes: 0,
                         userId: userFound.id
                     })
                         .then(function (newMessage) {

@@ -6,7 +6,7 @@ const models = require('../models');
 // Constantes
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-const BIO_REGEX = /^([a-z]|[A-Z]|[0-9,;.]){4,8}$/;
+const BIO_REGEX = /^[a-zA-Z0-9 ]*$/;
 
 //Fonctions
 
@@ -34,8 +34,12 @@ exports.signup = (req, res, next) => {
         return res.status(400).json({ 'error': 'mot de passe invalide (il doit contenir au moins 8 caractères dont 1 chiffre, une lettre et un caractère spécial' });
     }
 
-    if (BIO_REGEX.test(bio)) {
+    if (!BIO_REGEX.test(bio)) {
         return res.status(400).json({ 'error': 'Pas de caractères spéciaux!' });
+    }
+
+    if (!BIO_REGEX.test(username)) {
+        return res.status(401).json({ 'error': 'Pas de caractères spéciaux!' });
     }
 
 
