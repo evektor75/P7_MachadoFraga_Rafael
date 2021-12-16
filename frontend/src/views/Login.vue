@@ -72,13 +72,19 @@ export default {
 						this.$router.push('/feed');
 						
 					})
-					.catch(err => {
-						console.log('Connexion impossible ! ' + err);
+					.catch(e => {
+						console.log('Connexion impossible ! ' + e.response.status);
+						if(e.response.status == 404){
 						this.msgError = 'La combinaison adresse email / mot de passe est incorrecte';
 						let selected = document.querySelector('.selected');
 						let selectedbis = document.querySelector('.selectedbis')
 						selected.classList.add('inputError');
 						selectedbis.classList.add('inputError');
+						}
+						if(e.response.status == 429){
+							alert(`Trop de tentatives, l'accès est bloqué pendant 5min`);
+						}
+						
 
 					})
 			} else {

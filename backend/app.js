@@ -11,7 +11,6 @@ const commentsRoutes = require('./routes/comments');
 
 
 //instanciation serveur
-require("dotenv").config();
 const app = express();
 
 //CORS

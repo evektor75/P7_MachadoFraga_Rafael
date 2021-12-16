@@ -8,6 +8,7 @@
     <div class="collapse navbar-collapse ml-5" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <router-link to="/login" class="nav-link" v-if="user.token == null">Se connecter</router-link>
+        <router-link to="/signup" class="nav-link" v-if="user.token == null" >S'inscrire</router-link>
         <div id="userConnected" v-if="user.token !== null " >
           <div class="barre">
             <router-link to="/feed" class="nav-link">Mon Feed</router-link>
