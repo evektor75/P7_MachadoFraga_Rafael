@@ -28,7 +28,7 @@ exports.createMessage = (req, res, next) => {
     if (!CONTENT_REGEX.test(content)) {
         return res.status(400).json({ 'error': 'Pas de caractères spéciaux' });
     }
-    if (!CONTENT_REGEX.test(title)){
+    if (!CONTENT_REGEX.test(title)) {
         return res.status(400).json({ 'error': 'Pas de caractères spéciaux' });
     }
 
@@ -78,22 +78,32 @@ exports.createMessage = (req, res, next) => {
 //Lister les posts
 /*exports.listMessages = (req, res, next) => {
     models.Message.findAll({
-        include: ['User'],
+        include: ['Comments'],
         order: [['createdAt', 'DESC']]
     }).then(messages => {
-            if (messages) {
-                res.status(200).json(messages);
-            } else {
-                res.status(404).json({ 'error': 'pas de publication trouvée' });
-            }
+        if (messages) {
+            res.status(200).json(messages);
+        } else {
+            res.status(404).json({ 'error': 'pas de publication trouvée' });
+        }
 
-        }).catch(err => res.status(500).json({ err }));
+    }).catch(err => res.status(500).json({ err }));
 
 }*/
 
 exports.listMessages = (req, res, next) => {
-    models.Message.findAll({
-        include: ['User','Comments'],
+    models.Message.findAll({include: [{
+        model: models.User
+    },
+        {
+            model: models.Comment, 
+            include: {
+                model: models.User
+            }
+            
+        }
+      ],
+    
         order: [['createdAt', 'DESC']]
     })
         .then(posts => {

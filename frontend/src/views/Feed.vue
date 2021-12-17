@@ -36,7 +36,7 @@
             <div id="messageSection" v-for="item in messages" :key="item.id">
                     <div class="card mb-4 w-75 mx-auto post">
                         <div class="card-header d-flex justify-content-between">
-                            <div class="card-header_name">De <span class="authorPost"> {{item.User.username}} </span> le <span class="dayPost"> {{item.createdAt.split('T')[0]}}</span> à <span class="timePost"> {{item.createdAt.split('T')[1]}} </span></div>
+                            <div class="card-header_name">De <span class="authorPost"> {{item.User.username}} </span> le <span class="dayPost"> {{item.createdAt.split('T')[0]}}</span> à <span class="timePost"> {{item.createdAt.slice(11,16)}} </span></div>
                             <div class="card-header_dot" v-if="user.isAdmin==true || user.userId==item.userId">
                                 <router-link to="/feed/modifypost">
                                     <font-awesome-icon :icon="['fas','trash']"/>
@@ -54,16 +54,16 @@
                             <div class="d-flex justify-content-between align-items-center content">
                                 <div class="mr-3 content_like">
                                     <font-awesome-icon :icon="['fas','thumbs-up']" class="mr-1" />Like</div>
-                                <div class="mr-3 content_comment" data-toggle="collapse" data-target=".displayComments" aria-expanded="true" aria-controls="displayComments">
+                                <div class="mr-3 content_comment" v-on:click="commentSection">
                                     <font-awesome-icon :icon="['fas','comment']" class="mr-1" />Commenter</div>
                             </div>
                             <div class="content_border"></div>
                             <div class="comment mt-2">
                                 <div class="createComment d-flex">
-                                    <textarea type="text" id="commentSection" class="form-control" v-model="dataComment.content" placeholder="Ecrivez votre commentaire ..."></textarea>
+                                    <textarea type="text" id="commentSection" class="form-control inputComment" v-model="dataComment.content" placeholder="Ecrivez votre commentaire ..."></textarea>
                                     <button type="submit" class="btn btn-primary" value="Commenter" @click.prevent="createComment(item.id)"><font-awesome-icon :icon="['fas','plus']" /></button>
                                 </div>
-                                <div class="displayComments">
+                                <div id="sectionComment" v-show="commentVisibility">
                                     <div class="comment d-flex" v-for="comment in item.Comments" :key="comment.id">
                                             <div class="mt-2 mr-2 comment_name"></div>
                                             <div class="mt-2 ml-2 comment_commentary">{{comment.content}}</div>
@@ -98,6 +98,7 @@ export default {
             },
             msgError:"",
             messages: [],
+            commentVisibility: false,
         };
     },
     computed: {
@@ -154,9 +155,12 @@ export default {
 
         //création commentaire
         createComment(messageId) {
-            if (this.dataComment.comment !== null) {
-                console.log('Voici ce qui est renvoyé' + this.dataComment)
-                axios.post("http://localhost:3000/api/messages/comment", {
+            const bioRegex = /^[a-zA-Z0-9 ]*$/;
+            const comment = this.dataComment.content;
+            if (comment !== null) {
+                 if(bioRegex.test(comment)){    
+                     console.log('Voici ce qui est renvoyé' + this.dataComment)
+                        axios.post("http://localhost:3000/api/messages/comment", {
                         content: this.dataComment.content,
                         messageId: messageId
                     }, {
@@ -168,6 +172,15 @@ export default {
                         console.log(res);
                     })
                     .catch(err => console.log(err))
+            } else {
+                alert('Caractères spéciaux interdits ! ');
+            }
+                
+            } else {
+                alert('Veuillez entrer un commentaire');
+                let inputComment = document.querySelector('.inputComment');
+                inputComment.classList.add('redBorder');
+
             }
         },
 
@@ -185,6 +198,14 @@ export default {
                 }
                 )
                 .catch(err => console.log(`il s'agit d'une erreur de type ` + err))
+        },
+
+        //
+        commentSection(){
+            if(this.commentVisibility)
+                this.commentVisibility = false;
+            else
+                this.commentVisibility = true;  
         }
     },
 };
@@ -228,7 +249,14 @@ body {
     margin-top: 25px;
 }
 //
+
 //section commentaire
+.content_like {
+    cursor:pointer;
+}
+.content_comment{
+    cursor:pointer;
+}
 #commentSection {
     min-width: 85%;
     max-height: 40px;
@@ -243,5 +271,8 @@ body {
     position: absolute;
     right: 15px;
     size: 1.2em;
+}
+.redBorder{
+    border:1px solid red!important;
 }
 </style>
