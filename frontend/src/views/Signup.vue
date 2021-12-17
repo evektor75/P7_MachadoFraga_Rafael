@@ -19,14 +19,14 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text"><font-awesome-icon :icon="['fas','font']"/></span>
 							</div>
-							<input id="username" type="text" class="form-control" v-model="signup.username" placeholder="Pseudo">
+							<input id="username" type="text" class="form-control" v-model="signup.username" placeholder="Pseudo *" required>
 						</div>
 						<p class="remove_username text-center font-weight-bold">Pas de caractère spéciaux !</p>
 						<div class="input-group form-group">
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="fas fa-user"></i></span>
 							</div>
-							<input id="email" type="email" class="form-control" v-model="signup.email" placeholder="utilisateur@groupomania.com">
+							<input id="email" type="email" class="form-control" v-model="signup.email" placeholder="utilisateur@groupomania.com *" required>
 						</div>
 						<p class="remove_email labelStyle text-center font-weight-bold">Veuillez saisir une adresse email valide</p>
 						<div class="input-group form-group">
@@ -40,9 +40,12 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="fas fa-key"></i></span>
 							</div>
-							<input id="password" type="password" v-model="signup.password" class="form-control" placeholder="Mot de passe">
+							<input id="password" type="password" v-model="signup.password" class="form-control" placeholder="Mot de passe *" required>
 						</div>
 						<p class="remove_password labelStyle text-center font-weight-bold">Le mot de passe doit contenir au moins 8 caractères dont 1 chiffre, une lettre et un caractère spécial</p>
+						<div class="requiredInput text-center">
+							<p>* : Champ obligatoire</p>
+						</div>
 						<div class="form-group">
 							<input @click.prevent="sendSignup" type="submit" value="S'inscrire" class="btn float-right login_btn">
 						</div>
@@ -200,5 +203,8 @@ export default {
 }
 .redBorder {
 	border: 1px solid red!important;
+}
+.requiredInput {
+	color:white!important;
 }
 </style>

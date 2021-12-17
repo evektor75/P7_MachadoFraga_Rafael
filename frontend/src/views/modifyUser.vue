@@ -20,6 +20,10 @@
                 <label for="modifyBio" class="form-label">Bio</label>
                 <p class="form-control" id="modifyBio" type="text"> {{users.user.bio}}</p>
             </div>
+            <div class="mb-3" v-if="users.user.isAdmin !== false">
+                <label for="modifyBio" class="form-label">Modérateur</label>
+                <p class="form-control" id="modifyBio" type="text"> Droit de modérateur</p>
+            </div>
             <div class="buttonSection d-flex justify-content-between">
                 <button type="submit" class="btn btn-danger deleteAccount mx-auto" @click.prevent="deleteAccount">Supprimer votre compte</button>
             </div>
