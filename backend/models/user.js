@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 
         this.hasMany(models.Like,
           {
+            foreignKey: 'userId',
             onDelete: 'CASCADE'
           });
     }

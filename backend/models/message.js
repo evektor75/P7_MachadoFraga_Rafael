@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId'
       });
       models.Message.hasMany(models.Comment);
+      models.Message.hasMany(models.Like);
     }
   };
   Message.init({

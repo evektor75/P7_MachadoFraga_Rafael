@@ -14,70 +14,51 @@ exports.like = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
 
 
-    //Params
-    const messageId = parseInt(req.params.messageId);
+    models.User.findOne({
+        where: { id: userId }
 
-    if (messageId <= 0) {
-        return res.status(400).json({ 'error': 'paramètres invalides' })
-    }
-    models.Message.findOne({
-        where: { id: messageId }
     })
-        .then(messageFound => {
-            if (messageFound) {
-                models.User.findOne({
-                    where: { id: userId }
-
+        .then(userFound => {
+            if (userFound) {
+                console.log(userId);
+                models.Like.findOne({
+                    where: {
+                        userId: userId,
+                        messageId: req.body.messageId
+                    }
                 })
-                    .then(userFound => {
-                        if (userFound) {
-                            console.log(userId);
-                            console.log(messageId);
-                            models.Like.findOne({
-                                where: {
-                                    userId: userId,
-                                    messageId: messageId
-                                }
+                    .then(userAlreadyLiked => {
+                        if (userAlreadyLiked) {
+                            models.Like.destroy({
+                                where: { id: userAlreadyLiked.id}
                             })
-                                .then(userAlreadyLiked => {
-                                    if (userAlreadyLiked) {
-                                        res.status(409).json({ 'error': 'message déja aimé' });
+                            .then(() => res.status(200).json({ 'message' : 'like retiré'}))
+                            .catch(err => res.status(500).jspn({'error' : 'impossible de retiré le like'}))
 
-                                    } else {
-                                        models.Like.create({
-                                            messageId: messageId,
-                                            userId: userId
-                                        })
-                                            .then(() => {
-                                                if (messageFound) {
-                                                    res.status(201).json(messageFound)
-                                                } else {
-                                                    res.status(500).json({ 'error': 'impossible de mettre à jour le message' });
-                                                }
-                                            })
-                                            .catch(err => res.status(500).json({ 'error': 'impossible de mettre à jour le compteur ' + err }));
-
-                                    }
-
-                                })
-                                .catch(err => res.status(500).json({ 'error': `impossible de vérifier si l'user à déja aimé` + err }))
-                                ;
                         } else {
-                            res.status(404).json({ 'error': `l'utilisateur n'existe pas` });
+                            models.Like.create({
+                                userId: userId,
+                                messageId: req.body.messageId
+                            })
+                                .then(() => {
+                                    res.status(201).json({ 'message': ' like créé' })
+                                })
+                                .catch(err => res.status(500).json({ 'error': 'impossible de liké ' + err }));
+
                         }
 
                     })
-                    .catch(err => res.status(500).json({ 'error': `impossible de vérifier l'utilisateur` + err }));
+                    .catch(err => res.status(500).json({ 'error': `impossible de vérifier si l'user à déja aimé` + err }))
+                    ;
             } else {
-                res.status(404).json({ 'error': 'message déjà liké' })
+                res.status(404).json({ 'error': `l'utilisateur n'existe pas` });
             }
+
         })
-        .catch(err => res.status(500).json({ 'error': 'impossible de vérifier le message' + err }));
-
-
-
+        .catch(err => res.status(500).json({ 'error': `impossible de vérifier l'utilisateur` + err }));
 
 }
+
 
 
 //Fonction dislike

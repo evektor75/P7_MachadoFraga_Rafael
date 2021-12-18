@@ -92,18 +92,22 @@ exports.createMessage = (req, res, next) => {
 }*/
 
 exports.listMessages = (req, res, next) => {
-    models.Message.findAll({include: [{
-        model: models.User
-    },
+    models.Message.findAll({
+        include: [{
+            model: models.User
+        },
         {
-            model: models.Comment, 
+            model: models.Comment,
             include: {
-                model: models.User
-            }
-            
+                model: models.User,
+                attributes: ['id', 'username', 'isAdmin']
+            },
+        }, 
+        {
+            model: models.Like
         }
-      ],
-    
+        ],
+
         order: [['createdAt', 'DESC']]
     })
         .then(posts => {

@@ -4,8 +4,8 @@ const router = express.Router();
 const likesCtrl = require('../controllers/likesCtrl');
 
 //router
-router.post('/messages/:messageId/vote/like', likesCtrl.like);
-router.delete('/messages/:messageId/vote/removelike', likesCtrl.removeLike);
+router.post('/messages/like', likesCtrl.like);
+router.delete('/messages/removelike/:id', likesCtrl.removeLike);
 
 //export
 module.exports = router;
