@@ -30,7 +30,7 @@ export default {
             },
             msgError:"",
             messages: [],
-            
+             
         }
     },
     computed: {
@@ -38,6 +38,7 @@ export default {
     },
 
     mounted() {
+        //Recuperation des messages
         axios.get("http://localhost:3000/api/messages", {
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("userToken")

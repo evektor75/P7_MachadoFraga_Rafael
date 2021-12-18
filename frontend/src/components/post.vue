@@ -2,7 +2,7 @@
     <div class="card mb-4 w-75 mx-auto post">
         <div class="card-header d-flex justify-content-between">
             <div class="card-header_name">De <span class="authorPost"> {{message.User.username}} </span> le <span class="dayPost"> {{message.createdAt.split('T')[0]}}</span> à <span class="timePost"> {{message.createdAt.slice(11,16)}} </span></div>
-            <div class="card-header_dot" v-if="message.isAdmin==true || message.userId==message.userId">
+            <div class="card-header_dot" v-if="users.user.id == message.userId || users.user.isAdmin">
                 <router-link to="/feed/modifypost">
                     <font-awesome-icon :icon="['fas','trash']"/>
                 </router-link>
@@ -60,6 +60,7 @@ export default {
             dataComment: {
                 content: null
             },
+            users:[]
         }
     },
     computed: {
@@ -70,6 +71,20 @@ export default {
             type: Object,
             required: true
         }
+    },
+    mounted() {
+        
+        //Recuperation de l'utilisateur
+        axios.get("http://localhost:3000/api/auth/compte", {
+                headers: {
+                    authorization: "Bearer " + localStorage.getItem('userToken')
+                }
+            })
+            .then(res => {
+                this.users = res.data;
+                console.log('Utilisateur', this.users);
+            })
+            .catch(err => console.log(err))
     },
    
     methods: {

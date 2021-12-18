@@ -12,7 +12,7 @@ export default new Vuex.Store({
       email: '',
       username: '',
       bio: '',
-      userId: '',
+      id: '',
       token: null,
       isAdmin: false
 
@@ -31,11 +31,11 @@ export default new Vuex.Store({
   mutations: {
 
     //Users
-    userInformations(state, [email, username, bio, userId, isAdmin]) {
+    userInformations(state, [email, username, bio, id, isAdmin]) {
       state.user.email = email,
         state.user.username = username,
         state.user.bio = bio,
-        state.user.userId = userId,
+        state.user.id = id,
         state.user.token = localStorage.getItem('userToken'),
         state.user.isAdmin = isAdmin
     },
@@ -57,7 +57,8 @@ export default new Vuex.Store({
           authorization: "Bearer " + localStorage.getItem('userToken')
         }
       })
-        .then( res => {content.commit('userInformations', [res.data.username, res.data.id, res.data.email, res.data.bio, res.data.isAdmin])})
+        .then( res => {content.commit('userInformations', [res.data.username, res.data.id, res.data.email, res.data.bio, res.data.isAdmin])         
+      })
         .catch(err => console.log('erreur requête API' + err))
     },
     //Publications
