@@ -9,10 +9,11 @@
       <div class="navbar-nav">
         <router-link to="/login" class="nav-link" v-if="user.token == null">Se connecter</router-link>
         <router-link to="/signup" class="nav-link" v-if="user.token == null" >S'inscrire</router-link>
-        <div id="userConnected" v-if="user.token !== null " >
+        <div id="userConnected" v-if="user.token !== null" >
           <div class="barre">
-            <router-link to="/feed" class="nav-link">Mon Feed</router-link>
-            <router-link to="/user" class="nav-link" >Mon compte</router-link>
+            <router-link to="/feed" class="nav-link" >Mon Feed</router-link>
+            <router-link to="/user" class="nav-link">Mon compte</router-link>
+            <router-link to="/allUsers" class="nav-link">Utilisateurs</router-link>
             <button type="button" id="disconnect" class="btn btn-danger logout" @click.prevent="disconnect">Déconnexion</button>       
           </div>
         </div>
@@ -48,7 +49,7 @@ export default {
   computed: {
     ...mapState(["user"])
   }
-  }
+}
 </script>
 
 <style lang="scss">

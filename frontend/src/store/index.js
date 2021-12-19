@@ -14,19 +14,10 @@ export default new Vuex.Store({
       bio: '',
       id: '',
       token: null,
-      isAdmin: false
+      isAdmin: ''
 
     },
-    users: [],
     editOption:""
-  },
-  getters:{
-    messages(state) {
-      return state.messages;
-    },
-    users(state) {
-       return state.users;
-    }
   },
   mutations: {
 
@@ -42,12 +33,6 @@ export default new Vuex.Store({
     editStyle(state, value) {
       state.editOption = value;
     },
-
-    //Publications
-
-    GET_POSTS(state, messages) {
-      (state.messages = messages)
-    }
   },
   actions: {
     //Users
@@ -61,8 +46,6 @@ export default new Vuex.Store({
       })
         .catch(err => console.log('erreur requête API' + err))
     },
-    //Publications
   },
-  modules: {
-  }
+  
 })

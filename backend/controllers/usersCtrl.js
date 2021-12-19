@@ -10,7 +10,7 @@ const BIO_REGEX = /^[a-zA-Z0-9 ]*$/;
 
 //Fonctions
 
-//S'inscire
+//S'inscrire
 exports.signup = (req, res, next) => {
     const email = req.body.email;
     const username = req.body.username;
@@ -49,7 +49,8 @@ exports.signup = (req, res, next) => {
             email: email
         }
     })
-        .then(function () {
+        .then(function (userFound) {
+            if(!userFound){
             models.User.findOne({
                 attributes: ['username'],
                 where: { username: username }
@@ -75,10 +76,12 @@ exports.signup = (req, res, next) => {
                         });
 
                     } else {
-                        return res.status(400).json({ 'error': `utilisateur existant` });
+                        return res.status(400).json({ 'error': `pseudo existant` });
                     }
                 })
-
+        } else {
+            res.status(501).json({ 'err': 'adresse email existante'})
+        }
         })
 
         .catch(function (err) {
@@ -133,10 +136,10 @@ exports.login = (req, res, next) => {
 exports.getUserProfile = (req, res, next) => {
     const userId = jwtUtils.getUserId(req.headers.authorization);
     models.User.findOne({
-        attributes: ['id', 'email', 'username', 'bio','isAdmin'],
+        attributes: ['id', 'email', 'username', 'bio', 'isAdmin'],
         where: { id: userId }
     })
-        .then(user => res.status(200).json({user}))
+        .then(user => res.status(200).json({ user }))
         .catch(function (err) {
             res.status(500).json({ 'error': `impossible d'accéder à l'utilisateur` + err });
         });
@@ -146,15 +149,11 @@ exports.getUserProfile = (req, res, next) => {
 //Obtenir tous les profils
 exports.getAllProfiles = (req, res, next) => {
     models.User.findAll({
-        include: [
-            {
-                model: models.Message,
-                attributes: ['id'],
-            }
-        ]
+        attributes: ['id', 'email', 'username', 'bio', 'isAdmin'],
+
     })
-        .then(usersFound => {
-            res.status(200).json({ usersFound })
+        .then(users => {
+            res.status(200).json({ users })
         })
         .catch(err => {
             res.status(400).json({ err })
@@ -339,3 +338,30 @@ exports.deleteUser = (req, res, next) => {
     }
 }
 
+//Supprimer un profil en tant qu'admin
+exports.deleteUserProfile = (req, res, next) => {
+    let userOrder = req.body.userIdOrder;
+    let userId = jwtUtils.getUserId(req.headers.authorization);
+
+    models.User.findOne({
+        attributes: ["id", "email", "username", "isAdmin"],
+        where: { id: userId }
+    })
+        .then(userFound => {
+            if (userFound && (userFound.isAdmin == true || userFound.id == userOrder)) {
+                console.log("Suppression de l'utilisateur : ", req.params.id);
+                models.User.findOne({
+                    where: { id: req.params.id }
+                })
+                .then( user => {
+                    models.User.destroy({
+                        where: { id : user.id}
+                    })
+                    .then( () => res.status(200).json({'message' : 'utilisateur supprimé'}))
+                    .catch(err => res.status(500).json({ 'err' : 'utilisateur non supprimé' + err}))
+                })
+                .catch(err => res.status(500).json({'err': `user introuvable` + err}))
+            }
+        })
+        .catch(err => res.status(500).json({ err }))
+}

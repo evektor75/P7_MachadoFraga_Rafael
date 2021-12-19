@@ -12,6 +12,7 @@ router.get('/compte', auth, userCtrl.getUserProfile);
 router.get('/allProfiles', auth, userCtrl.getAllProfiles);
 router.put('/compte/modify', auth, userCtrl.updateAccount);
 router.delete('/compte/delete',auth, userCtrl.deleteUser);
+router.delete('/compte/delete/:id', auth, userCtrl.deleteUserProfile);
 
 
 module.exports = router;

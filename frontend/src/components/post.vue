@@ -129,7 +129,7 @@ export default {
                         }
                     })
                 .then(res => {
-                    console.log('Message liké' + res);
+                    console.log('Message supprimé' + res);
                 }
                 )
                 .catch(err => console.log(`il s'agit d'une erreur de type ` + err))

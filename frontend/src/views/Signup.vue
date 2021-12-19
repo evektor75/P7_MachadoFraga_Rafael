@@ -121,7 +121,19 @@ export default {
 
 					})
 					.catch(err => {
-						console.log(err);
+						if(err.response.status == 501){
+							alert('Adresse email existante');
+							let inputEmail = document.querySelector('#email');
+							inputEmail.classList.add('redBorder');
+						}
+							
+
+						if(err.response.status == 400){
+							alert('Username existant');
+							let inputUsername = document.querySelector('#username');
+							inputUsername.classList.add('redBorder');
+						}
+						
 					});
 				} else {
 					console.log("impossible d'effectuer les regex")
@@ -206,5 +218,8 @@ export default {
 }
 .requiredInput {
 	color:white!important;
+}
+.card-body{
+	padding-top:5px!important;
 }
 </style>
