@@ -83,6 +83,7 @@ body {
     margin-top: 3em !important;
     min-height:370px!important;
     height:auto!important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
 }
 .card-img{
     text-align:center;

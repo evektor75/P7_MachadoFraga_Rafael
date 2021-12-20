@@ -24,6 +24,7 @@ body {
 	background-size: cover;
 	background-repeat: no-repeat;
 	height: 100%;
+  min-width:375px;
 	font-family: 'Numans'!important, sans-serif;
 }
 

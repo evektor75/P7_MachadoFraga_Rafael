@@ -90,4 +90,7 @@ export default {
 .publish_btn{
 	margin-top:10px!important;
 }
+.login_btn{
+    background-color:#FFC312!important;
+}
 </style>

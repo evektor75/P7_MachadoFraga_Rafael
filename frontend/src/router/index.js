@@ -28,11 +28,6 @@ const routes = [
     component : () => import(/* webpackChunkName: "about" */ '../views/Feed.vue')
   },
   {
-    path:'/feed/modifypost',
-    name: 'modifyPost',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Modify.vue')
-  },
-  {
     path:'/user',
     name: 'modifyUser',
     component: () => import(/* webpackChunkName: "about" */ '../views/modifyUser.vue')

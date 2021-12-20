@@ -30,18 +30,18 @@ exports.like = (req, res, next) => {
                     .then(userAlreadyLiked => {
                         if (userAlreadyLiked) {
                             models.Like.destroy({
-                                where: { id: userAlreadyLiked.id}
+                                where: { id: userAlreadyLiked.id }
                             })
-                            .then(() => res.status(200).json({ 'message' : 'like retiré'}))
-                            .catch(err => res.status(500).jspn({'error' : 'impossible de retiré le like'}))
+                                .then((response) => res.status(200).json({ response }))
+                                .catch(err => res.status(500).jspn({ 'error': 'impossible de retiré le like' }))
 
                         } else {
                             models.Like.create({
                                 userId: userId,
                                 messageId: req.body.messageId
                             })
-                                .then(() => {
-                                    res.status(201).json({ 'message': ' like créé' })
+                                .then(response => {
+                                    res.status(201).json({ response })
                                 })
                                 .catch(err => res.status(500).json({ 'error': 'impossible de liké ' + err }));
 

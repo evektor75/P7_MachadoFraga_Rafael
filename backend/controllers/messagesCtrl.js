@@ -6,7 +6,7 @@ const fs = require('fs');
 
 
 //Constantes
-const CONTENT_REGEX = /^[a-zA-Z0-9 ]*$/;
+const CONTENT_REGEX = /^[a-zA-Z0-9 ,.!?'éèàç]*$/;
 //Routes
 
 //Création d'un Post
@@ -102,7 +102,7 @@ exports.listMessages = (req, res, next) => {
                 model: models.User,
                 attributes: ['id', 'username', 'isAdmin']
             },
-        }, 
+        },
         {
             model: models.Like
         }
@@ -127,47 +127,55 @@ exports.listMessages = (req, res, next) => {
 
 //Supprimer un post
 exports.delete = (req, res, next) => {
-    const userIdent = jwtUtils.getUserId(req.headers.authorization);
-    const messageId = parseInt(req.params.messageId);
-    console.log(req.headers.authorization);
-    console.log(messageId);
-    models.Message.findOne({
-        where: { UserId: userIdent }
+    let userOrder = req.body.userIdOrder;
+    let userId = jwtUtils.getUserId(req.headers.authorization);
+
+    models.User.findOne({
+        where: { id: userId }
     })
-        .then(identifiant => {
-            models.User.findOne({
-                attributes: ['id', 'email', 'username', 'isAdmin'],
-                where: { Id: userIdent }
-            })
-                .then(user => {
-                    if (user && (user.isAdmin == true || user.id == identifiant.UserId)) {
-                        models.Message.findOne({
-                            where: { id: messageId }
-                        })
-                            .then(MessageFound => {
-                                if (MessageFound.attachement) {
-                                    const filename = MessageFound.attachement.split('/images/')[1];
-                                    fs.unlink(`images/${filename}`, () => {
-                                        models.Message.destroy({ where: { id: MessageFound.id } })
-                                            .then(() => res.status(200).json({ 'message': 'fin' }))
-                                            .catch(err => res.status(500).json({ err }))
-                                    })
-                                } else {
-                                    models.Message.destroy({ where: { id: MessageFound.id } })
-                                        .then(() => res.status(200).json({ 'message': 'fin' }))
-                                        .catch(err => res.status(500).json({ 'erreur': err }))
-                                }
-                            })
-                            .catch(err => res.status(500).json(err))
-                    } else {
-                        res.status(400).json('utilisateur non autorisé à supprimer ce post ' + userIdent + ' ' + identifiant.UserId);
-                    }
+        .then(user => {
+            if (user && (user.isAdmin == true || user.id == userOrder)) {
+                console.log(req.params.id);
+                models.Message.findOne({
+                    where: { id: req.params.id }
                 })
-                .catch(err => res.status(500).json(err))
+                    .then(messageFound => {
+                        //Gestion du cas avec image 
+                        if (messageFound.attachment) {
+                            const filename = messageFound.attachment.split("/images/")[1]; //Récuperation du nom de l'image
+                            fs.unlink(`images/${filename}`, () => {
+                                models.Comment.destroy({
+                                    where: { messageId: messageFound.id }
+                                }),
+                                    models.Like.destroy({
+                                        where: { messageId: messageFound.id }
+                                    }),
+                                    models.Message.destroy({
+                                        where: { id: messageFound.id }
+                                    })
+                                        .then(() => res.end())
+                                        .catch(err => res.status(500).json(err))
+                            })
+                        } else {
+                            //Gestion du cas sans image
+                            models.Comment.destroy({
+                                where: { messageId: messageFound.id }
+                            }),
+                                models.Like.destroy({
+                                    where: { messageId: messageFound.id }
+                                }),
+                                models.Message.destroy({
+                                    where: { id: messageFound.id }
+                                })
+                                    .then(() => res.end())
+                                    .catch(err => res.status(500).json(err))
+                        }
+                    })
+                    .catch(err => res.status(400).json({ 'err': 'impossible de trouver le message' + err }))
+            } else {
+                res.status(400).json({ 'err': ` L'utilisateur n'est pas autorisé à supprimer le message` });
+            }
         })
-        .catch(err => res.status(500).json({ 'error': 'impossible' + err }));
-    if (messageId <= 0) {
-        return res.status(400).json({ 'error': 'paramètres invalides' })
-    }
+        .catch(err => res.status(400).json({ err }))
 
 }

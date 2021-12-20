@@ -179,12 +179,11 @@ export default {
 <style lang="scss">
 .card {
 	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 .return {
-	position: absolute;
-	left: 35px;
-	top: 85px;
+	margin-top:25px;
 	width: 1.5em;
 	height: 1.5em;
 	

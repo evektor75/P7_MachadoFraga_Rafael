@@ -3,9 +3,7 @@
         <div class="card-header d-flex justify-content-between">
             <div class="card-header_name">De <span class="authorPost"> {{message.User.username}} </span> le <span class="dayPost"> {{message.createdAt.split('T')[0]}}</span> à <span class="timePost"> {{message.createdAt.slice(11,16)}} </span></div>
             <div class="card-header_dot" v-if="users.user.id == message.userId || users.user.isAdmin">
-                <router-link to="/feed/modifypost">
-                    <font-awesome-icon :icon="['fas','trash']"/>
-                </router-link>
+                    <font-awesome-icon :icon="['fas','trash']" @click.prevent="deleteMessage(message.id, message.userId)"/>
             </div>
         </div>
         <div class="card-body">
@@ -18,11 +16,11 @@
         <div class="card-footer">
             <div class="d-flex justify-content-between align-items-center content">
                 <div class="mr-3 content_like"  @click.prevent="createLike(message.id)">
-                    <font-awesome-icon :icon="['fas','thumbs-up']" class="mr-1"/>Like</div>
+                    <font-awesome-icon :icon="['fas','thumbs-up']" class="mr-1 like" v-bind:class="alreadyLiked: likes.response.userId == users.user.id"/>Like</div>
                 <div class="mr-3 content_comment" v-on:click="commentSection">
-                    <font-awesome-icon :icon="['fas','comment']" class="mr-1" />Commenter</div>
+                    <font-awesome-icon :icon="['fas','comment']" class="mr-1" />Commenter <br><small v-if="message.Comments.length >= 1">Il y a {{message.Comments.length}} commentaire(s)</small></div>
             </div>
-            <div class="likeNumber mb-2" v-if="message.Likes.length > 1 ">{{message.Likes.length}} personnes ont aimé <font-awesome-icon :icon="['fas','heart']"/></div>
+            <div class="likeNumber mb-2" v-if="message.Likes.length > 1 ">{{message.Likes.length}} personnes ont aimé<font-awesome-icon :icon="['fas','heart']"/></div>
             <div class="likeNumber mb-2" v-if="message.Likes.length == 1">{{message.Likes.length}} personne a aimé <font-awesome-icon :icon="['fas','heart']"/></div>
             <div class="content_border"></div>
             <div class="comment mt-2">
@@ -30,13 +28,13 @@
                     <textarea type="text" id="commentSection" class="form-control inputComment" v-model="dataComment.content" placeholder="Ecrivez votre commentaire ..."></textarea>
                     <button type="submit" class="btn btn-primary" value="Commenter" @click.prevent="createComment(message.id)"><font-awesome-icon :icon="['fas','plus']" /></button>
                 </div>
-                <div id="sectionComment" v-show="commentVisibility">
+                <div id="sectionComment" v-show="commentVisibility" class="mt-3">
                     <div class="comment d-flex" v-for="comment in message.Comments" :key="comment.id">
                             <div class="boxComment">
                                 <div class="mt-2 mr-2 comment_name ml-1"><u>{{comment.User.username}}</u></div>
                                 <div class="mt-2 ml-2 comment_commentary ml-2">{{comment.content}}</div>
                             </div>
-                            <div class="moderationComment" v-if="user.isAdmin ==true">
+                            <div class="moderationComment" v-if="users.user.isAdmin ==true">
                                 <font-awesome-icon :icon="['fas','trash']" class="trash" @click.prevent="deleteComment(comment.id, comment.userId)"/>
                             </div>
                     </div>
@@ -52,6 +50,7 @@ import axios from "axios";
 import { mapState } from "vuex";
 
 
+
 export default {
     name :"post",
     data() {
@@ -60,7 +59,8 @@ export default {
             dataComment: {
                 content: null
             },
-            users:[]
+            users:[],
+            likes:[],
         }
     },
     computed: {
@@ -68,8 +68,9 @@ export default {
     },
     props:{
         message:{
-            type: Object,
-            required: true
+            title: String,
+            content: String, 
+            attachment: String
         }
     },
     mounted() {
@@ -82,7 +83,6 @@ export default {
             })
             .then(res => {
                 this.users = res.data;
-                console.log('Utilisateur', this.users);
             })
             .catch(err => console.log(err))
     },
@@ -90,7 +90,7 @@ export default {
     methods: {
         //création commentaire
         createComment(messageId) {
-            const bioRegex = /^[a-zA-Z0-9 ]*$/;
+            const bioRegex = /^[a-zA-Z0-9 ,.!?'éèàç]*$/;
             const comment = this.dataComment.content;
             if (comment !== null) {
                  if(bioRegex.test(comment)){    
@@ -129,7 +129,8 @@ export default {
                         }
                     })
                 .then(res => {
-                    console.log('Message supprimé' + res);
+                    console.log('Commentaire supprimé' + res);
+                    window.location.reload();
                 }
                 )
                 .catch(err => console.log(`il s'agit d'une erreur de type ` + err))
@@ -150,9 +151,32 @@ export default {
                             authorization: "Bearer " + window.localStorage.getItem("userToken")
                         }
                     })
-                    .then(res => console.log(res))
-                    .catch(err => console.log('Impossible de liké' + err ));
+                    .then(res => {
+                        this.likes = res.data;
+                        console.log(this.likes);
+                        })
+                    .catch(err => console.log('Impossible de liké ' + err ));
+        },
+
+        //Suppression de la publication
+
+        deleteMessage(id, userIdOrder) {
+            if( window.confirm("Voulez vous vraiment supprimer cette publication ?")){
+                axios.delete("http://localhost:3000/api/messages/"+id, {
+                    data : { userIdOrder },
+                    headers: {
+                            authorization: "Bearer " + window.localStorage.getItem("userToken")
+                        }
+                })
+                .then(res => {
+                    console.log('Message supprimé' + res);
+                 
+                }
+                )
+                .catch(err => console.log(`il s'agit d'une erreur de type ` + err))
+            }
         }
+
     }
 }
 
@@ -162,6 +186,7 @@ export default {
 .post{
     margin-top:15px;
     max-width:560px!important;
+    min-width:350px!important
 }
 .content{
     margin-top:auto;
@@ -185,5 +210,15 @@ export default {
     border: 1px solid rgba(0,0,0,0.5);
     width:100%;
     border-radius:5px;
+}
+.alreadyLiked{
+    color:blue!important;
+}
+svg {
+    cursor:pointer;
+}
+.trash{
+    margin-top:1.5em;
+    margin-right:1.5em
 }
 </style>

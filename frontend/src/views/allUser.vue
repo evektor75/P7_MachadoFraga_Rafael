@@ -23,6 +23,13 @@
       </table>
       </div>
     </div>
+    <div id='userNotConnected' v-else>
+        <router-link to="/login">
+            <h1 class="text-center alertUser">Veuillez vous connecter dans un premier temps !
+                <font-awesome-icon :icon="['fas','id-card']" />
+            </h1>
+        </router-link>
+    </div>
 </template>
 
 <script>
@@ -96,6 +103,13 @@ export default {
 }
 table {
   font-size:14px;
+}
+.alertUser {
+    color: black;
+    font-weight: bold;
+    padding-top: 25%;
+    background-color: $background-color !important;
+    font-family: 'Numans', sans-serif;
 }
 
 
