@@ -23,7 +23,7 @@ export default new Vuex.Store({
 
     //Users
     userInformations(state, [email, username, bio, id, isAdmin]) {
-      state.user.email = email,
+        state.user.email = email,
         state.user.username = username,
         state.user.bio = bio,
         state.user.id = id,

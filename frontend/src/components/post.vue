@@ -16,7 +16,7 @@
         <div class="card-footer">
             <div class="d-flex justify-content-between align-items-center content">
                 <div class="mr-3 content_like"  @click.prevent="createLike(message.id)">
-                    <font-awesome-icon :icon="['fas','thumbs-up']" class="mr-1 like" v-bind:class="alreadyLiked: likes.response.userId == users.user.id"/>Like</div>
+                    <font-awesome-icon :icon="['fas','thumbs-up']" class="mr-1 like" />Like</div>
                 <div class="mr-3 content_comment" v-on:click="commentSection">
                     <font-awesome-icon :icon="['fas','comment']" class="mr-1" />Commenter <br><small v-if="message.Comments.length >= 1">Il y a {{message.Comments.length}} commentaire(s)</small></div>
             </div>
@@ -83,6 +83,7 @@ export default {
             })
             .then(res => {
                 this.users = res.data;
+                console.log(this.users.user);
             })
             .catch(err => console.log(err))
     },

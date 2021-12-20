@@ -24,6 +24,7 @@ export default {
     data() {
         return {
             message: {
+                id:"",
                 title: "",
                 content: "",
                 selectedFile: ""
