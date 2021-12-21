@@ -33,8 +33,8 @@ export default {
     name:'allUser',
     data() {
       return{
-        users:[],
-        userConnected:[]
+        users: {users: { username: '', isAdmin: false, bio: '', email:''}},
+        userConnected:{ user: { username: '', isAdmin: false, bio: '', email:''}}
       }
     },
     computed: {

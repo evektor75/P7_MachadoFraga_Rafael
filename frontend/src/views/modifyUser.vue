@@ -40,7 +40,7 @@ export default {
     name: "modifyUser",
     data() {
         return {
-            users: []
+            users: { user: { username: '', isAdmin: false, bio: '', email:''}},
         }
     },
     computed: {

@@ -15,10 +15,8 @@
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between align-items-center content">
-                <div class="mr-3 content_like" @click.prevent="createLike(message.id), show = !show">
-                    <transition enter-active-class="animate__animated animate__fadeInDown" leave-active-class="animate__animated animate__fadeOutUp">
-                        <font-awesome-icon :icon="['fas','heart']" class="mr-1 heart" v-if="show" v-bind:class=" {alreadyLiked : user.id}" />
-                    </transition>
+                <div class="mr-3 content_like" @click.prevent="createLike(message.id)">
+                        <font-awesome-icon :icon="['fas','heart']" class="mr-1"  v-bind:class="likedClass" />
                     Like
                 </div>
                 <div class="mr-3 content_comment" v-on:click="commentSection">
@@ -66,20 +64,24 @@ export default {
             dataComment: {
                 content: null
             },
-            show: true,
-            users: [],
+            likedClass: 'alreadyLiked',
+            unliked:'',
+            users: { user: {id : 0}},
             likes: [],
         }
     },
     computed: {
-        ...mapState(["user"])
+        ...mapState(["user"])                       
     },
     props: {
         message: {
             title: String,
             content: String,
-            attachment: String
-        }
+            attachment: String,
+            Comments: Array,
+            Likes: Array
+
+        },
     },
     mounted() {
 
@@ -91,9 +93,16 @@ export default {
             })
             .then(res => {
                 this.users = res.data;
-                console.log(this.users);
+                console.log('Utilisateurs',this.users);
+                if(this.message.Likes.some (e => e.userId == this.users.user.id)){
+                    this.likedClass = 'alreadyLiked';
+                } else {
+                    this.likedClass = '';
+                }
             })
             .catch(err => console.log(err))
+
+        
     },
 
     methods: {
@@ -113,6 +122,7 @@ export default {
                             }
                         })
                         .then(res => {
+                            this.message.Comments.push({ User: {username: this.users.user.username}, content: this.dataComment.content, id: res.data.comment.id });
                             console.log(res);
                         })
                         .catch(err => console.log(err))
@@ -138,8 +148,11 @@ export default {
                     }
                 })
                 .then(res => {
+                    let comment = this.message.Comments;
+                    this.message.Comments = comment.filter(function(value){ 
+                     return value.id != id;
+                    });
                     console.log('Commentaire supprimé' + res);
-                    window.location.reload();
                 })
                 .catch(err => console.log(`il s'agit d'une erreur de type ` + err))
         },
@@ -161,10 +174,26 @@ export default {
                 })
                 .then(res => {
                     this.likes = res.data;
+                    if(this.likes.response.createdAt){
+                        console.log(res.data);
+                        this.message.Likes.push({ userId: res.data.response.userId , messageId: res.data.response.messageId });
+                        this.likedClass = 'alreadyLiked';
+                    } else {
+                        let id = this.users.user.id;
+                        this.message.Likes = this.message.Likes.filter( function(value) {
+                            return value.userId != id;
+                        });
+                        this.likedClass = '';
+                    }
+
                     console.log(this.likes);
                 })
                 .catch(err => console.log('Impossible de liké ' + err));
         },
+
+    
+           
+        
 
         //Suppression de la publication
 
@@ -222,7 +251,7 @@ export default {
 }
 
 .alreadyLiked {
-    color: #3B5998 !important;
+    color: #ed0000 !important;
 }
 
 svg {
