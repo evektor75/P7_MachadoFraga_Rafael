@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <top />
+    <top/>
+      <transition mode="out-in" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
       <router-view/>
+      </transition>
   </div>
 </template>
 
@@ -19,7 +21,7 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Numans');
 html,
 body {
-	background-color: #FFAE9D !important;
+	background-color: #FFAE9D!important;
 	opacity: 0.85;
 	background-size: cover;
 	background-repeat: no-repeat;

@@ -1,7 +1,7 @@
 <template>
-    <div class="container" v-if="user.token !== null">
+    <div id="allUser">
       <h1 class="mt-4 text-center">Liste des utilisateurs</h1>
-        <h2 class="mt-3">Il y a <span class="font-weight-bold"> {{users.users.length}}</span> utilisateurs</h2>
+        <h2 class="mt-3 ml-2">Il y a <span class="font-weight-bold"> {{users.users.length}}</span> utilisateurs</h2>
       <div class="table-responsive mt-5">
       <table class="table">
         <thead>
@@ -22,13 +22,6 @@
         </tbody>
       </table>
       </div>
-    </div>
-    <div id='userNotConnected' v-else>
-        <router-link to="/login">
-            <h1 class="text-center alertUser">Veuillez vous connecter dans un premier temps !
-                <font-awesome-icon :icon="['fas','id-card']" />
-            </h1>
-        </router-link>
     </div>
 </template>
 
@@ -71,7 +64,13 @@ export default {
                 this.userConnected = res.data;
                 console.log('Utilisateur', this.userConnected);
             })
-            .catch(err => console.log(err))
+            .catch(err =>{
+                console.log(err)
+                if(err.response.status == 401)
+                alert('Veuillez vous connecter dans un premier temps');
+                this.$router.push('/login');
+                })
+            this.$store.dispatch("getUserProfile");
     },
     methods:{
       
@@ -97,6 +96,15 @@ export default {
 }
 </script>
 <style>
+
+@import url('https://fonts.googleapis.com/css?family=Numans');
+.nav-link{
+    font-family: 'Numans'!important;
+    font-size:16px!important;
+}
+#allUser{
+  color: #212529!important;
+}
 .trashUser{
   font-size:1.3em;
    cursor:pointer;
@@ -109,7 +117,7 @@ table {
     font-weight: bold;
     padding-top: 25%;
     background-color: $background-color !important;
-    font-family: 'Numans', sans-serif;
+    font-family: 'Numans'!important, sans-serif;
 }
 
 

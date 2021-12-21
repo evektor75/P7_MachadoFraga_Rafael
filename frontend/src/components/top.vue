@@ -55,9 +55,10 @@ export default {
 <style lang="scss">
 
 @import '../assets/_variable.scss';
-
+@import url('https://fonts.googleapis.com/css?family=Numans');
 nav {
   width: 100%;
+	font-family: 'Numans'!important, sans-serif;
 }
 .navbarColor {
     background-color:#FAF2EA!important;

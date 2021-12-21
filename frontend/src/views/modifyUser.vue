@@ -1,5 +1,5 @@
 <template>
-    <div id="modifyUser" v-if="user.token !== null">
+    <div id="modifyUser">
         <div class="title">
             <h1 class="text-center mt-4"> <i class="fas fa-user"></i>  Vos informations personnelles</h1>
         </div>
@@ -29,13 +29,6 @@
             </div>
         </form>
     </div>
-    <div id='userNotConnected' v-else>
-        <router-link to="/login">
-            <h1 class="text-center alertUser">Veuillez vous connecter dans un premier temps !
-                <font-awesome-icon :icon="['fas','id-card']" />
-            </h1>
-        </router-link>
-    </div>
 </template>
 
 <script>
@@ -63,7 +56,13 @@ export default {
                 this.users = res.data;
                 console.log(this.users);
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                if(err.response.status == 401)
+                alert('Veuillez vous connecter dans un premier temps');
+                this.$router.push('/login');
+                })
+              this.$store.dispatch("getUserProfile");
     },
     methods: {
         deleteAccount(id, userIdOrder) {
@@ -91,6 +90,10 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Numans');
 @import '../assets/_variable.scss';
+.nav-link{
+    font-family: 'Numans'!important;
+    font-size:16px!important;
+}
 .title h1 {
     font-size: 2em;
     margin-top: 15px;

@@ -121,7 +121,6 @@ body {
 }
 
 .card {
-	height: 370px;
 	margin-top: 45%;
 	width: 400px;
 	background-color: rgba(0, 0, 0, 0.5) !important;
