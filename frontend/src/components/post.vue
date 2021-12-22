@@ -207,6 +207,7 @@ export default {
                     })
                     .then(res => {
                         console.log('Message supprimé' + res);
+                        window.location.reload();
 
                     })
                     .catch(err => console.log(`il s'agit d'une erreur de type ` + err))

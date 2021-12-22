@@ -70,6 +70,7 @@ export default {
                     })
                     .then(res => {
                         console.log(res);
+                        window.location.reload();
                     })
                     .catch(() => this.msgError = 'Vérifier votre saisi ...')
             }
