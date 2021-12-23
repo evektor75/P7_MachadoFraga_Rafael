@@ -81,7 +81,7 @@ export default {
 		sendSignup() {
 			const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 			const regexEmail = /^[a-z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-			const bioRegex = /^[a-zA-Z0-9 ]*$/;
+			const bioRegex = /^[a-zA-Z0-9 ,.!?'éèàç]*$/;
 			
 			//Infos saisies
 			const password = this.signup.password;
@@ -239,7 +239,7 @@ body {
 }
 
 .card {
-	margin-top: 45%;
+	margin-top: 40%;
 	width: 400px;
 	background-color: rgba(0, 0, 0, 0.5) !important;
 }

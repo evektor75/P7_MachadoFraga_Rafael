@@ -1,11 +1,11 @@
 //Import
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require('jsonwebtoken');//package jsonwebtoken 
+require('dotenv').config(); //On importe les mots de passes 
 //Fonction à exporter
 
 
 module.exports = {
-    jwtTokenSign : process.env.JWT_SIGN_SECRET,
+    jwtTokenSign : process.env.JWT_SIGN_SECRET, 
     generateTokenForUser: function (userData) {
         return jwt.sign({
             userId: userData.id,

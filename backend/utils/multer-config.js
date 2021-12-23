@@ -1,5 +1,5 @@
 //imports
-const multer = require('multer');
+const multer = require('multer');//package multer pour gérer les images
 
 //Formats autorisés
 

@@ -76,21 +76,6 @@ exports.createMessage = (req, res, next) => {
 
 
 //Lister les posts
-/*exports.listMessages = (req, res, next) => {
-    models.Message.findAll({
-        include: ['Comments'],
-        order: [['createdAt', 'DESC']]
-    }).then(messages => {
-        if (messages) {
-            res.status(200).json(messages);
-        } else {
-            res.status(404).json({ 'error': 'pas de publication trouvée' });
-        }
-
-    }).catch(err => res.status(500).json({ err }));
-
-}*/
-
 exports.listMessages = (req, res, next) => {
     models.Message.findAll({
         include: [{
@@ -119,10 +104,6 @@ exports.listMessages = (req, res, next) => {
         })
         .catch(err => res.status(500).json(err))
 }
-
-
-//TODO Modification d'un post
-
 
 
 //Supprimer un post

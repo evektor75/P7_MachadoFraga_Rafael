@@ -2,11 +2,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const helmet = require('helmet');
-const expressSession = require('express-session');
-const cookieSession = require('cookie-session');
+const helmet = require('helmet');//Permet la bonne configuration des en-têtes HTTP
+const cookieSession = require('cookie-session');//Sauvegarde les données de session dans les cookies
 
-
+//Import des routes
 const userRoutes = require('./routes/user');
 const messagesRoutes = require('./routes/messages');
 const likesRoutes = require('./routes/likes');
@@ -23,13 +22,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
-//Mise en place middleware express-session
-/*app.set('trust proxy', 1);
-app.use(expressSession({
-    secret: 's3Cur3',
-    name: 'sessionId'
-}))
-*/
+
 //Mise en place du middleware cookie-session
 let expiryDate = new Date( Date.now() + 60 * 60 * 1000); // 1 hour
 app.use(cookieSession({
