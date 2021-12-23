@@ -8,8 +8,8 @@
           <tr>
             <th>Username</th>
             <th>Email</th>
-            <th>Modérateur</th>
-            <th v-if="userConnected.user.isAdmin" class="text-danger">Supprimer</th>
+            <th class="text-center">Modérateur</th>
+            <th v-if="userConnected.user.isAdmin" class="text-danger text-center">Supprimer</th>
           </tr>
         </thead>
         <tbody>

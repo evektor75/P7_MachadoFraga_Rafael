@@ -9,7 +9,8 @@ import 'animate.css';
 
 library.add(fas);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
 
 Vue.config.productionTip = false
 

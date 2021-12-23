@@ -88,7 +88,6 @@ body {
 }
 .card-img{
     text-align:center;
-    max-height:250px!important;
 }
 .urlAttachment{
     object-fit:cover;
