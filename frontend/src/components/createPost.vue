@@ -56,10 +56,6 @@ export default {
             fd.append("title", this.contentMessage.title);
             fd.append("content", this.contentMessage.content);
             fd.append("file", this.contentMessage.selectedFile);
-            console.log('Vérification de la récupération', fd.get('title'));
-            console.log('Vérification de la récupération', fd.get('content'));
-            console.log('Verifiaction de la récupération', fd.get('file'));
-
             if (fd.get('content') == 'null' || fd.get('title') == "null") {
                 alert('Impossible de publier, vérifier votre publicaiton');
             } else {
